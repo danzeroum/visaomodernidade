@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "schema_grafo_proveniencia_textual_v3.json",
+  "$id": "schemas/proveniencia.schema.json",
   "title": "Grafo de Proveniência Textual v3",
   "description": "Valida o grafo de proveniência: obras, manifestações, fontes declaradas, originais identificados, mediações, comparações e operações tradutórias.",
   "type": "object",

@@ -5,6 +5,78 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.6.2] — 2026-08-14
+
+### Corrigido (hotfix #2 para CI)
+
+- **Bug crítico**: o workflow do GitHub executava `python -m pytest tests/ -q` (sem `--ignore=tests/e2e`), fazendo com que os 24 testes E2E tentassem rodar sem o Chromium do Playwright instalado, resultando em 24 erros (`BrowserType.launch: Executable doesn't exist`).
+- **`tests/e2e/conftest.py`**: a fixture `browser_context` agora detecta se o Chromium está disponível e **pula graciosamente** todos os testes E2E com `pytest.skip()` quando o navegador não está instalado, em vez de falhar com erro de execução.
+- **`validate-data.yml` simplificado**: consolidado em **job único** que instala Playwright + Chromium antes de rodar todos os testes (regressão + E2E). Antes havia dois jobs e o primeiro não instalava Playwright.
+- **Resultado no CI**: 67 passed + 24 passed (com Chromium) ou 67 passed + 24 skipped (sem Chromium). Nunca mais 24 erros.
+
+### Comportamento de resiliência
+
+| Cenário | Resultado |
+|---------|-----------|
+| CI com `playwright install chromium` | 67 passed + 24 passed (91 total) |
+| CI sem `playwright install` | 67 passed + 24 skipped (0 erros) |
+| Desenvolvedor sem Chromium local | 67 passed + 24 skipped |
+
+## [0.6.1] — 2026-08-14
+
+### Corrigido (hotfix para CI)
+
+- **Bug crítico**: `arquivos_validados` no `relatorio_validacao.json` ainda referenciava nomes antigos de schemas (`schema_corpus_britanico_canonico.json` etc.) que foram movidos para `data/schemas/` com nomes padronizados (`corpus.schema.json` etc.) na v0.4.0. Isso causava falha no teste `test_arquivos_validados_presentes` no CI do GitHub Actions (PR #5 falhou).
+- **`validador_semantico.py`**: atualizada a lista `arquivos_validados` para usar os novos nomes: `schemas/corpus.schema.json`, `schemas/contextual.schema.json`, `schemas/proveniencia.schema.json`.
+- **`test_relatorio_validacao.py`**: adicionadas asserções explícitas para os 3 nomes de schemas no `arquivos_validados`.
+- **`build_schemas.py`**: corrigidos os `$id` dos 3 schemas para refletir os novos caminhos (`schemas/corpus.schema.json` etc.).
+- **Schemas duplicados removidos**: arquivos antigos `data/schema_*.json` foram removidos; apenas `data/schemas/*.schema.json` permanecem.
+
+### Melhorado (robustez de CI)
+
+- **`tests/e2e/conftest.py`**: porta do servidor HTTP agora é dinâmica (usa porta livre via `socket.bind(0)`) em vez de fixa 8091, evitando conflitos em ambientes CI.
+- **`tests/e2e/conftest.py`**: servidor agora faz bind em `127.0.0.1` (mais confiável que `localhost` em alguns ambientes CI).
+- **`tests/e2e/conftest.py`**: timeout do `wait_for_function` aumentado de 10s para 15s.
+- **`tests/e2e/conftest.py`**: `page.goto` agora usa `wait_until="networkidle"` com timeout de 30s.
+- **`tests/e2e/conftest.py`**: retry loop (5 tentativas) para aguardar servidor subir antes de prosseguir.
+
+## [0.6.0] — 2026-08-14
+
+### Adicionado (Sprint 2 — validação antes do deploy + smoke tests E2E)
+
+**PR1 — Publicação segura** (`deploy-pages.yml` reescrito):
+- O workflow de deploy agora valida dados acadêmicos **ANTES** de montar o artefato do Pages.
+- Etapa explícita: `python scripts/build_all.py` → `python scripts/validate.py` → check `resultado == "aprovado"` (falha o deploy se não estiver aprovado).
+- Etapa de verificação de sincronia `data/↔scripts` (falha se `git status data/` mostrar mudanças após o build).
+- Montagem do `_site/` com `data/` dentro, permitindo `fetch('./data/*.json')` no GitHub Pages.
+
+**PR2 — Smoke test estático no CI**:
+- Etapa "Verify public assets (smoke test)" no `deploy-pages.yml`: 14 recursos públicos verificados via `curl --fail` (HTML, JS, CSS, JSONs, schemas, renderers).
+- Etapa "Verify data integrity in artifact": valida que os 4 JSONs no `_site/data/` são sintaticamente válidos, validação aprovada e corpus tem 10 itens.
+- Servidor HTTP local subido via `python -m http.server 8080 --directory _site` durante o CI.
+
+**PR2b — Testes E2E com Playwright** (`tests/e2e/`):
+- `test_homepage.py` (6 testes): título, hero stats (35/92/10/7), 5 seções principais, 5 links de navegação, banner de estado ready/warning, ausência de erros de console.
+- `test_timeline.py` (6 testes): 35 fascículos, primeira data 13/08/1837, datas calculadas corretamente (13/08/1837 + (n-1)*7 dias), 13 fascículos britânicos destacados (9 únicos + 4 de Esboços), clique abre dossiê, Esboços Sicilianos serializado em n.31-34.
+- `test_dossier_costumes.py` (3 testes consolidados): identidade (n.30, 4 mar 1838, pp. 233-236), original identificado (A Cockney Country-Gentleman, John Poole), fonte declarada problemática (Colburn's Magazine), versão francesa marcada como NÃO sendo fonte direta, rota efetiva não identificada, 3 operações tradutórias, evidências com paginação dupla (PDF 103-111 / impressa 95-103), botão fechar e tecla ESC.
+- `test_translation_lab.py` (9 testes): 4 seletores, default mostra Costumes (3 ops), layout 3 colunas (Original/Gabinete/Leitura), flags visuais, troca para Honras (2 ops: gesto + espaço), Álibi (1 op: irlandeses), Esboços (1 op: punição moral), badges de status, evidências com paginação PDF.
+- `tests/e2e/conftest.py`: fixtures para subir servidor HTTP local em :8091, instanciar browser Chromium headless, capturar erros de console, limpar estado entre testes.
+
+**CI atualizado** (`validate-data.yml`):
+- Novo job `e2e-smoke-tests` que depende de `academic-data-validation`.
+- Instala Playwright + Chromium, monta `_site/`, roda `pytest tests/e2e/`.
+- Upload de artefatos em caso de falha para debug.
+
+### Alterado
+- `requirements-dev.txt`: adicionado `playwright>=1.40,<2`.
+- `pyproject.toml`: `python_files` agora inclui `*.spec.py` e `*_spec.py` (embora os arquivos finais usem `test_*.py`).
+- `pyproject.toml`: adicionado `playwright>=1.40,<2` às dependências dev.
+
+### Estatísticas
+- **91 testes totais** (67 regressão + 24 E2E), todos passando.
+- **14 recursos públicos** verificados via smoke test curl no CI.
+- **Deploy agora falha** se validação semântica não estiver aprovada ou se data/ estiver dessincronizado.
+
 ## [0.5.0] — 2026-08-14
 
 ### Adicionado

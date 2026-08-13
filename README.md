@@ -1,4 +1,4 @@
-# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.5.0)
+# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.2)
 
 [![Validate academic data](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
 [![Deploy to Pages](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml)
@@ -89,7 +89,7 @@ make build
 # Valida os dados (semântica + schemas)
 make validate
 
-# Roda os 67 testes de regressão
+# Roda os 67 testes de regressão + 24 testes E2E (Playwright)
 make test
 
 # Espelha o CI do GitHub Actions localmente
@@ -114,7 +114,9 @@ make site
 | Erros de validação (alta gravidade) | 0 |
 | Placeholders remanescentes | 0 |
 | Arestas órfãs | 0 |
-| **Testes de regressão** | **67 (todos passando)** |
+| Testes de regressão | 67 (todos passando) |
+| Testes E2E (Playwright) | 24 (todos passando) |
+| **Total de testes** | **91 (todos passando)** |
 
 ## Status epistemológico
 
@@ -197,8 +199,10 @@ python -m pytest tests/ -v
 | v0.2.2 | anterior | Rascunho com fascículos embaralhados, placeholders, manifestação inglesa fabricada |
 | v0.3.0 | 2026-08-14 | Correção dos 12 fascículos/datas; eliminação de placeholders; separação de schemas; 22 divergências documentadas; modelo tri-relacional |
 | v0.3.1 | 2026-08-14 | 4 ajustes finais: offset não universal; mediação rebaixada para `inferido` + nova aresta `TEM_VERSAO_FRANCESA_NA_REVUE`; rota de Costumes `nao_identificado`; divergência interna de Anatomy of Drunkness preservada |
-| **v0.5.0** | **2026-08-14** | **MVP da exposição digital:** site/ com renderers modulares (timeline, dossier, evidence, translation-lab), deploy-pages.yml atualizado para incluir data/ no artefato do Pages |
-| v0.5.0 | 2026-08-14 | Engenharia de projeto:** `pyproject.toml`, `Makefile`, `src/visaomodernidade/` modular, 67 testes de regressão, GitHub Actions CI/CD, `CONTRIBUTING.md`, `CHANGELOG.md`, `docs/metodologia.md`, `docs/modelo-de-dados.md`, `site/` placeholder |
+| **v0.6.2** | **2026-08-14** | **Hotfix CI #2:** testes E2E pulam graciosamente sem Chromium (causa da falha do PR #9); workflow consolidado em job único com Playwright |
+| v0.6.0 | 2026-08-14 | Sprint 2: deploy valida dados antes do Pages (PR1); smoke tests curl no CI (PR2); 24 testes E2E com Playwright (PR2b); 91 testes totais passando |
+| v0.5.0 | 2026-08-14 | MVP da exposição digital: site/ com renderers modulares (timeline, dossier, evidence, translation-lab), deploy-pages.yml com data/ no artefato do Pages |
+| v0.4.0 | 2026-08-14 | Engenharia de projeto: `pyproject.toml`, `Makefile`, `src/visaomodernidade/` modular, 67 testes de regressão, GitHub Actions CI/CD, `CONTRIBUTING.md`, `CHANGELOG.md`, `docs/metodologia.md`, `docs/modelo-de-dados.md`, `site/` placeholder |
 
 Veja `CHANGELOG.md` para detalhes completos.
 
@@ -231,7 +235,7 @@ MIT — veja `LICENSE`.
 
 ```bibtex
 @misc{visaomodernidade_v040,
-  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.5.0)},
+  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.2)},
   author = {Extraído e validado a partir de Soares, Maria Angélica Lau Pereira (2006)},
   year   = {2026},
   note   = {Grafo contextual e grafo de proveniência textual dos dez textos britânicos do Gabinete de Leitura (1837-1838)},
