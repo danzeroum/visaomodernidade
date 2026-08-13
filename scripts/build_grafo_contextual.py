@@ -20,7 +20,7 @@ Hirarquia de confiança:
 import json
 from pathlib import Path
 
-OUT = Path("/home/z/my-project/output/grafo_contextual_v2.json")
+OUT = Path(__file__).resolve().parent.parent / "data" / "grafo_contextual_v2.json"
 
 # Evidências (com paginação dupla) — reutiliza as mesmas do grafo de proveniência
 # + algumas específicas contextuais

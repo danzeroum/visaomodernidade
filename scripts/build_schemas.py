@@ -17,7 +17,8 @@ Os schemas impõem:
 import json
 from pathlib import Path
 
-OUT_DIR = Path("/home/z/my-project/output")
+OUT_DIR = Path(__file__).resolve().parent.parent / "data"
+SCHEMAS_DIR = OUT_DIR / "schemas"
 
 STATUS_ENUM = ["documentado", "identificado", "inferido", "hipotese", "problematico", "nao_identificado"]
 
@@ -427,18 +428,19 @@ schema_proveniencia = {
 
 # Escrever schemas
 for name, schema in [
-    ("schema_corpus_britanico_canonico.json", schema_corpus),
-    ("schema_grafo_contextual_v2.json", schema_contextual),
-    ("schema_grafo_proveniencia_textual_v3.json", schema_proveniencia),
+    ("corpus.schema.json", schema_corpus),
+    ("contextual.schema.json", schema_contextual),
+    ("proveniencia.schema.json", schema_proveniencia),
 ]:
-    path = OUT_DIR / name
+    path = SCHEMAS_DIR / name
+    SCHEMAS_DIR.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(schema, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Escrito: {path}")
 
 # Verificação rápida: schemas são JSON válidos
-for name in ["schema_corpus_britanico_canonico.json",
-             "schema_grafo_contextual_v2.json",
-             "schema_grafo_proveniencia_textual_v3.json"]:
-    p = OUT_DIR / name
+for name in ["corpus.schema.json",
+             "contextual.schema.json",
+             "proveniencia.schema.json"]:
+    p = SCHEMAS_DIR / name
     json.loads(p.read_text(encoding="utf-8"))
     print(f"OK: {name} é JSON válido")

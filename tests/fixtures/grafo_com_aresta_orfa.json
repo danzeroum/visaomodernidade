@@ -1,0 +1,22 @@
+{
+  "versao": "0.0.0-broken",
+  "data_geracao": "2026-08-14",
+  "vocabulario_controlado": {
+    "tipos_no": ["Tese", "Periodico", "Pessoa"],
+    "tipos_aresta": ["AUTOR_DE"],
+    "status_epistemologico": ["documentado", "nao_identificado"]
+  },
+  "nos": [
+    {"id": "tese:x", "tipo": "Tese", "titulo": "Tese", "status_epistemologico": "documentado"}
+  ],
+  "arestas": [
+    {
+      "id": "edge:orfã",
+      "origem": "tese:x",
+      "destino": "pessoa:inexistente",
+      "tipo": "AUTOR_DE",
+      "status_epistemologico": "documentado"
+    }
+  ],
+  "evidencias": []
+}

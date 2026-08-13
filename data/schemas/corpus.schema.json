@@ -1,0 +1,329 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "schema_corpus_britanico_canonico.json",
+  "title": "Corpus Britânico Canônico — Gabinete de Leitura (1837-1838)",
+  "description": "Valida a tabela canônica dos dez textos ficcionais britânicos identificados na tese de Soares (2006).",
+  "type": "object",
+  "required": [
+    "$schema",
+    "versao",
+    "data_geracao",
+    "fonte_primaria",
+    "itens"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "versao": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "data_geracao": {
+      "type": "string",
+      "format": "date"
+    },
+    "fonte_primaria": {
+      "type": "object",
+      "required": [
+        "arquivo",
+        "autora",
+        "ano"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "arquivo": {
+          "type": "string"
+        },
+        "autora": {
+          "type": "string"
+        },
+        "titulo": {
+          "type": "string"
+        },
+        "ano": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "instituicao": {
+          "type": "string"
+        },
+        "orientadora": {
+          "type": "string"
+        }
+      }
+    },
+    "metadados": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "itens": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/definitions/itemCorpus"
+      }
+    }
+  },
+  "definitions": {
+    "itemCorpus": {
+      "type": "object",
+      "required": [
+        "id",
+        "titulo_gabinete",
+        "autor_original",
+        "autor_status",
+        "origem_linguistica",
+        "fasciculos",
+        "fonte_declarada_no_gabinete",
+        "fonte_original_identificada",
+        "original_identificado",
+        "rota_tradutoria",
+        "mediacao_francesa",
+        "operacoes_tradutorias_ids",
+        "evidencias_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^corpus:[a-z0-9-]+$"
+        },
+        "titulo_gabinete": {
+          "type": "string",
+          "minLength": 1
+        },
+        "titulo_original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "autor_original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "autor_status": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "origem_linguistica": {
+          "type": "string",
+          "enum": [
+            "en",
+            "pt-br",
+            "fr",
+            "es",
+            "de",
+            "outro"
+          ]
+        },
+        "fasciculos": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/fasciculoCorpus"
+          }
+        },
+        "fonte_declarada_no_gabinete": {
+          "$ref": "#/definitions/fonteDeclarada"
+        },
+        "fonte_original_identificada": {
+          "$ref": "#/definitions/fonteOriginalIdentificada"
+        },
+        "original_identificado": {
+          "type": "boolean"
+        },
+        "rota_tradutoria": {
+          "$ref": "#/definitions/statusComDescricao"
+        },
+        "mediacao_francesa": {
+          "$ref": "#/definitions/statusComDescricao"
+        },
+        "operacoes_tradutorias_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^op:[a-z0-9:-]+$"
+          }
+        },
+        "evidencias_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "observacoes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "fasciculoCorpus": {
+      "type": "object",
+      "required": [
+        "numero",
+        "data_iso",
+        "papel"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "numero": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 100
+        },
+        "data_iso": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "paginas_periodico": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "papel": {
+          "enum": [
+            "publicacao",
+            "continua",
+            "conclusao"
+          ]
+        }
+      }
+    },
+    "fonteDeclarada": {
+      "type": "object",
+      "required": [
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "referencia": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "fonteOriginalIdentificada": {
+      "type": "object",
+      "required": [
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "veiculo": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "data": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "data_iso": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "editor_epoca": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "statusComDescricao": {
+      "type": "object",
+      "required": [
+        "status",
+        "descricao"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "descricao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metodo": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Método de inferência usado quando status=inferido (ex.: 'inferencia_por_exclusao')."
+        }
+      }
+    }
+  }
+}

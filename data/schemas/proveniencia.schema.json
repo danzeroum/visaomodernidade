@@ -1,0 +1,542 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "schema_grafo_proveniencia_textual_v3.json",
+  "title": "Grafo de Proveniência Textual v3",
+  "description": "Valida o grafo de proveniência: obras, manifestações, fontes declaradas, originais identificados, mediações, comparações e operações tradutórias.",
+  "type": "object",
+  "required": [
+    "versao",
+    "data_geracao",
+    "vocabulario_controlado",
+    "nos",
+    "arestas",
+    "operacoes_tradutorias",
+    "evidencias"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "versao": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "data_geracao": {
+      "type": "string",
+      "format": "date"
+    },
+    "metadados_projeto": {
+      "type": "object"
+    },
+    "vocabulario_controlado": {
+      "type": "object",
+      "required": [
+        "tipos_no",
+        "tipos_aresta",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tipos_no": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "enum": [
+            [
+              "Tese",
+              "Periodico",
+              "Giftbook",
+              "Fasciculo",
+              "PublicacaoSerializada",
+              "ObraAbstrata",
+              "ManifestacaoTextual",
+              "Pessoa",
+              "FonteDeclarada",
+              "Trecho",
+              "OperacaoTradutoria",
+              "Evidencia",
+              "Argumento",
+              "Local"
+            ]
+          ],
+          "minItems": 14
+        },
+        "tipos_aresta": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "enum": [
+            [
+              "AUTOR_DE",
+              "MANIFESTA",
+              "PUBLICADA_EM",
+              "PERTENCE_A",
+              "SERIALIZADA_EM",
+              "PARTE_EM",
+              "DECLARA_COMO_FONTE",
+              "PUBLICADA_ORIGINALMENTE_EM",
+              "RELACAO_DE_DEPENDENCIA_TEXTUAL",
+              "INTERMEDIADA_POR",
+              "TEM_VERSAO_FRANCESA_NA_REVUE",
+              "NAO_E_FONTE_DIRETA_DE",
+              "COMPARA_COM",
+              "TEM_TRECHO",
+              "AFETA",
+              "SUSTENTA",
+              "ANALISA"
+            ]
+          ],
+          "minItems": 17
+        },
+        "status_epistemologico": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "enum": [
+            [
+              "documentado",
+              "identificado",
+              "inferido",
+              "hipotese",
+              "problematico",
+              "nao_identificado"
+            ]
+          ],
+          "minItems": 6
+        }
+      }
+    },
+    "nos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/noProv"
+      }
+    },
+    "arestas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/arestaProv"
+      }
+    },
+    "operacoes_tradutorias": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/operacaoTradutoria"
+      }
+    },
+    "argumentos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/argumento"
+      }
+    },
+    "evidencias": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/evidencia"
+      }
+    }
+  },
+  "definitions": {
+    "noProv": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]+:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "enum": [
+            "Tese",
+            "Periodico",
+            "Giftbook",
+            "Fasciculo",
+            "PublicacaoSerializada",
+            "ObraAbstrata",
+            "ManifestacaoTextual",
+            "Pessoa",
+            "FonteDeclarada",
+            "Trecho",
+            "OperacaoTradutoria",
+            "Evidencia",
+            "Argumento",
+            "Local"
+          ]
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "atributos": {
+          "type": "object"
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "justificativa": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "arestaProv": {
+      "type": "object",
+      "required": [
+        "id",
+        "origem",
+        "destino",
+        "tipo",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^edge:[a-z0-9-]+$"
+        },
+        "origem": {
+          "type": "string",
+          "pattern": "^[a-z]+:[a-z0-9:-]+$"
+        },
+        "destino": {
+          "type": "string",
+          "pattern": "^[a-z]+:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "enum": [
+            "AUTOR_DE",
+            "MANIFESTA",
+            "PUBLICADA_EM",
+            "PERTENCE_A",
+            "SERIALIZADA_EM",
+            "PARTE_EM",
+            "DECLARA_COMO_FONTE",
+            "PUBLICADA_ORIGINALMENTE_EM",
+            "RELACAO_DE_DEPENDENCIA_TEXTUAL",
+            "INTERMEDIADA_POR",
+            "TEM_VERSAO_FRANCESA_NA_REVUE",
+            "NAO_E_FONTE_DIRETA_DE",
+            "COMPARA_COM",
+            "TEM_TRECHO",
+            "AFETA",
+            "SUSTENTA",
+            "ANALISA"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "qualificador": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "justificativa": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "operacaoTradutoria": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "tipo_operacao",
+        "obra_id",
+        "manifestacoes_comparadas",
+        "efeito_textual",
+        "status_epistemologico",
+        "evidence_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^op:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "OperacaoTradutoria"
+          ]
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tipo_operacao": {
+          "type": "string"
+        },
+        "obra_id": {
+          "type": "string",
+          "pattern": "^work:[a-z0-9-]+$"
+        },
+        "manifestacoes_comparadas": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^manifestation:[a-z0-9:-]+$"
+          }
+        },
+        "trecho_original": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trecho_brasileiro": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "efeito_textual": {
+          "type": "string"
+        },
+        "efeito_interpretativo": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "argumento": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^argument:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "Argumento"
+          ]
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enunciado": {
+          "type": "string"
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "sustenta_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]+:[a-z0-9:-]+$"
+          }
+        }
+      }
+    },
+    "evidencia": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "fonte",
+        "tipo_evidencia",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^evidence:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "Evidencia"
+          ]
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fonte": {
+          "type": "object",
+          "required": [
+            "obra",
+            "ano",
+            "arquivo"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "obra": {
+              "type": "string"
+            },
+            "ano": {
+              "type": "integer"
+            },
+            "arquivo": {
+              "type": "string"
+            },
+            "pagina_pdf_inicio": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pagina_pdf_fim": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pagina_impressa_inicio": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pagina_impressa_fim": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            }
+          }
+        },
+        "tipo_evidencia": {
+          "type": "string"
+        },
+        "conteudo": {
+          "type": "string"
+        },
+        "citacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        }
+      }
+    }
+  }
+}

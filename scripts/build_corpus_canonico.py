@@ -9,10 +9,10 @@ Cada afirmação é referenciada com paginação dupla (PDF / impressa).
 import json
 from pathlib import Path
 
-OUT = Path("/home/z/my-project/output/corpus_britanico_canonico.json")
+OUT = Path(__file__).resolve().parent.parent / "data" / "corpus_britanico_canonico.json"
 
 corpus = {
-    "$schema": "./schema_corpus_britanico_canonico.json",
+    "$schema": "./schemas/corpus.schema.json",
     "versao": "1.1.0",
     "data_geracao": "2026-08-14",
     "fonte_primaria": {
