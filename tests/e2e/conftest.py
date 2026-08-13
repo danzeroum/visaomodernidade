@@ -87,45 +87,57 @@ def http_server(_site_dir):
 
 @pytest.fixture(scope="session")
 def browser_context(http_server):
-    """Fixture que abre um browser Chromium headless e navega para a página inicial."""
+    """Fixture que abre um browser Chromium headless e navega para a página inicial.
+
+    Se os browsers do Playwright não estiverem instalados, pula todos os testes E2E
+    com uma mensagem clara (em vez de falhar com erro de execução).
+    """
     from playwright.sync_api import sync_playwright
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            viewport={"width": 1280, "height": 800},
-            # Captura erros de console
+    # Verifica se o Chromium está instalado antes de tentar lançar
+    try:
+        pw = sync_playwright().start()
+        browser = pw.chromium.launch(headless=True)
+    except Exception as e:
+        pytest.skip(
+            f"Playwright Chromium não disponível. "
+            f"Execute 'python -m playwright install chromium' antes dos testes E2E. "
+            f"Erro: {e}"
         )
-        page = context.new_page()
 
-        # Coleta erros de console
-        console_errors = []
-        page.on("console", lambda msg: console_errors.append(msg) if msg.type == "error" else None)
-        page.on("pageerror", lambda err: console_errors.append(f"pageerror: {err}"))
+    context = browser.new_context(
+        viewport={"width": 1280, "height": 800},
+    )
+    page = context.new_page()
 
-        page.goto(http_server, wait_until="networkidle", timeout=30000)
-        # Aguarda o carregamento dos dados (estado ready ou warning)
-        try:
-            page.wait_for_function(
-                "() => { const b = document.getElementById('state-banner'); return b && (b.style.display === 'none' || b.className.includes('warning')); }",
-                timeout=15000
-            )
-        except Exception:
-            pass  # Continua mesmo se timeout (testes subsequentes vão falhar)
+    # Coleta erros de console
+    console_errors = []
+    page.on("console", lambda msg: console_errors.append(msg) if msg.type == "error" else None)
+    page.on("pageerror", lambda err: console_errors.append(f"pageerror: {err}"))
 
-        # Disponibiliza o contexto para os testes
-        class BrowserCtx:
-            def __init__(self, page, context, browser, errors, base_url):
-                self.page = page
-                self.context = context
-                self.browser = browser
-                self.console_errors = errors
-                self.base_url = base_url
+    page.goto(http_server, wait_until="networkidle", timeout=30000)
+    # Aguarda o carregamento dos dados (estado ready ou warning)
+    try:
+        page.wait_for_function(
+            "() => { const b = document.getElementById('state-banner'); return b && (b.style.display === 'none' || b.className.includes('warning')); }",
+            timeout=15000
+        )
+    except Exception:
+        pass  # Continua mesmo se timeout (testes subsequentes vão falhar)
 
-        yield BrowserCtx(page, context, browser, console_errors, http_server)
+    class BrowserCtx:
+        def __init__(self, page, context, browser, errors, base_url):
+            self.page = page
+            self.context = context
+            self.browser = browser
+            self.console_errors = errors
+            self.base_url = base_url
 
-        context.close()
-        browser.close()
+    yield BrowserCtx(page, context, browser, console_errors, http_server)
+
+    context.close()
+    browser.close()
+    pw.stop()
 
 
 @pytest.fixture

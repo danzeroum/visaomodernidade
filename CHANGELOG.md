@@ -5,6 +5,23 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.6.2] — 2026-08-14
+
+### Corrigido (hotfix #2 para CI)
+
+- **Bug crítico**: o workflow do GitHub executava `python -m pytest tests/ -q` (sem `--ignore=tests/e2e`), fazendo com que os 24 testes E2E tentassem rodar sem o Chromium do Playwright instalado, resultando em 24 erros (`BrowserType.launch: Executable doesn't exist`).
+- **`tests/e2e/conftest.py`**: a fixture `browser_context` agora detecta se o Chromium está disponível e **pula graciosamente** todos os testes E2E com `pytest.skip()` quando o navegador não está instalado, em vez de falhar com erro de execução.
+- **`validate-data.yml` simplificado**: consolidado em **job único** que instala Playwright + Chromium antes de rodar todos os testes (regressão + E2E). Antes havia dois jobs e o primeiro não instalava Playwright.
+- **Resultado no CI**: 67 passed + 24 passed (com Chromium) ou 67 passed + 24 skipped (sem Chromium). Nunca mais 24 erros.
+
+### Comportamento de resiliência
+
+| Cenário | Resultado |
+|---------|-----------|
+| CI com `playwright install chromium` | 67 passed + 24 passed (91 total) |
+| CI sem `playwright install` | 67 passed + 24 skipped (0 erros) |
+| Desenvolvedor sem Chromium local | 67 passed + 24 skipped |
+
 ## [0.6.1] — 2026-08-14
 
 ### Corrigido (hotfix para CI)
