@@ -1,0 +1,59 @@
+{
+  "resultado": "aprovado",
+  "data_validacao": "2026-08-14",
+  "arquivos_validados": [
+    "corpus_britanico_canonico.json",
+    "grafo_contextual_v2.json",
+    "grafo_proveniencia_textual_v3.json",
+    "schema_corpus_britanico_canonico.json",
+    "schema_grafo_contextual_v2.json",
+    "schema_grafo_proveniencia_textual_v3.json"
+  ],
+  "erros": [],
+  "avisos": [
+    {
+      "codigo": "EVIDENCIA_ID_REUTILIZADO",
+      "entidade": "evidence:soares:2006:pdf-p9-12:redatores-gabinete",
+      "mensagem": "Evidence ID aparece em ambos os grafos (2x). Isto é aceitável se o conteúdo é idêntico."
+    },
+    {
+      "codigo": "EVIDENCIA_ID_REUTILIZADO",
+      "entidade": "evidence:soares:2006:pdf-p16-17:condicoes-producao",
+      "mensagem": "Evidence ID aparece em ambos os grafos (2x). Isto é aceitável se o conteúdo é idêntico."
+    },
+    {
+      "codigo": "EVIDENCIA_ID_REUTILIZADO",
+      "entidade": "evidence:soares:2006:pdf-p143-144:excecoes-revue-britannique",
+      "mensagem": "Evidence ID aparece em ambos os grafos (2x). Isto é aceitável se o conteúdo é idêntico."
+    },
+    {
+      "codigo": "EVIDENCIA_ID_REUTILIZADO",
+      "entidade": "evidence:soares:2006:pdf-p166-167:autor-bulwer-lytton",
+      "mensagem": "Evidence ID aparece em ambos os grafos (2x). Isto é aceitável se o conteúdo é idêntico."
+    },
+    {
+      "codigo": "EVIDENCIA_ID_REUTILIZADO",
+      "entidade": "evidence:soares:2006:pdf-p175-176:autor-irving",
+      "mensagem": "Evidence ID aparece em ambos os grafos (2x). Isto é aceitável se o conteúdo é idêntico."
+    },
+    {
+      "codigo": "EVIDENCIA_ID_REUTILIZADO",
+      "entidade": "evidence:soares:2006:pdf-p173-174:autor-grattan",
+      "mensagem": "Evidence ID aparece em ambos os grafos (2x). Isto é aceitável se o conteúdo é idêntico."
+    }
+  ],
+  "estatisticas": {
+    "nos_contextual": 76,
+    "arestas_contextual": 65,
+    "nos_proveniencia": 108,
+    "arestas_proveniencia": 127,
+    "evidencias": 42,
+    "operacoes_tradutorias": 7,
+    "argumentos": 5,
+    "textos_corpus": 10,
+    "arestas_orfas": 0,
+    "ids_duplicados": 6,
+    "evidencias_ausentes": 0,
+    "placeholders_encontrados": 0
+  }
+}
