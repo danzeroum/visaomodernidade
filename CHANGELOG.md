@@ -5,6 +5,43 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.6.0] — 2026-08-14
+
+### Adicionado (Sprint 2 — validação antes do deploy + smoke tests E2E)
+
+**PR1 — Publicação segura** (`deploy-pages.yml` reescrito):
+- O workflow de deploy agora valida dados acadêmicos **ANTES** de montar o artefato do Pages.
+- Etapa explícita: `python scripts/build_all.py` → `python scripts/validate.py` → check `resultado == "aprovado"` (falha o deploy se não estiver aprovado).
+- Etapa de verificação de sincronia `data/↔scripts` (falha se `git status data/` mostrar mudanças após o build).
+- Montagem do `_site/` com `data/` dentro, permitindo `fetch('./data/*.json')` no GitHub Pages.
+
+**PR2 — Smoke test estático no CI**:
+- Etapa "Verify public assets (smoke test)" no `deploy-pages.yml`: 14 recursos públicos verificados via `curl --fail` (HTML, JS, CSS, JSONs, schemas, renderers).
+- Etapa "Verify data integrity in artifact": valida que os 4 JSONs no `_site/data/` são sintaticamente válidos, validação aprovada e corpus tem 10 itens.
+- Servidor HTTP local subido via `python -m http.server 8080 --directory _site` durante o CI.
+
+**PR2b — Testes E2E com Playwright** (`tests/e2e/`):
+- `test_homepage.py` (6 testes): título, hero stats (35/92/10/7), 5 seções principais, 5 links de navegação, banner de estado ready/warning, ausência de erros de console.
+- `test_timeline.py` (6 testes): 35 fascículos, primeira data 13/08/1837, datas calculadas corretamente (13/08/1837 + (n-1)*7 dias), 13 fascículos britânicos destacados (9 únicos + 4 de Esboços), clique abre dossiê, Esboços Sicilianos serializado em n.31-34.
+- `test_dossier_costumes.py` (3 testes consolidados): identidade (n.30, 4 mar 1838, pp. 233-236), original identificado (A Cockney Country-Gentleman, John Poole), fonte declarada problemática (Colburn's Magazine), versão francesa marcada como NÃO sendo fonte direta, rota efetiva não identificada, 3 operações tradutórias, evidências com paginação dupla (PDF 103-111 / impressa 95-103), botão fechar e tecla ESC.
+- `test_translation_lab.py` (9 testes): 4 seletores, default mostra Costumes (3 ops), layout 3 colunas (Original/Gabinete/Leitura), flags visuais, troca para Honras (2 ops: gesto + espaço), Álibi (1 op: irlandeses), Esboços (1 op: punição moral), badges de status, evidências com paginação PDF.
+- `tests/e2e/conftest.py`: fixtures para subir servidor HTTP local em :8091, instanciar browser Chromium headless, capturar erros de console, limpar estado entre testes.
+
+**CI atualizado** (`validate-data.yml`):
+- Novo job `e2e-smoke-tests` que depende de `academic-data-validation`.
+- Instala Playwright + Chromium, monta `_site/`, roda `pytest tests/e2e/`.
+- Upload de artefatos em caso de falha para debug.
+
+### Alterado
+- `requirements-dev.txt`: adicionado `playwright>=1.40,<2`.
+- `pyproject.toml`: `python_files` agora inclui `*.spec.py` e `*_spec.py` (embora os arquivos finais usem `test_*.py`).
+- `pyproject.toml`: adicionado `playwright>=1.40,<2` às dependências dev.
+
+### Estatísticas
+- **91 testes totais** (67 regressão + 24 E2E), todos passando.
+- **14 recursos públicos** verificados via smoke test curl no CI.
+- **Deploy agora falha** se validação semântica não estiver aprovada ou se data/ estiver dessincronizado.
+
 ## [0.5.0] — 2026-08-14
 
 ### Adicionado
