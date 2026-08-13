@@ -5,6 +5,27 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.6.3] — 2026-08-14
+
+### Corrigido (sincronização README com MVP da exposição digital)
+
+- **README.md reescrito** para refletir o estado real do `site/` (v0.5.0+):
+  - Árvore do `site/` agora lista todos os 5 renderizadores (`badges.js`, `timeline.js`, `dossier.js`, `evidence.js`, `translation-lab.js`), `data-loader.js`, `icons.svg` e `app.js`.
+  - `index.html` descrito como "MVP da exposição digital estática" (não mais "placeholder").
+- **`make site` corrigido**: agora monta `_site/` com `data/` dentro e serve o resultado (idêntico ao artefato do GitHub Pages). Antes servia apenas `site/` sem os JSONs, fazendo `fetch('./data/*.json')` falhar.
+- **Novo alvo `make site-build`**: monta `_site/` sem iniciar servidor (útil para inspeção do artefato de produção).
+- **Correção de formulação sobre Crabbe**: em vez de "Crabbe's Posthumous Works inexistente", agora registra "não houve publicação com o título indicado" — formulação da própria tese (Anexo 3, verbete George Crabbe).
+- **Correção de formulação sobre Retrospective Review**: agora explica que "era uma revista de resenhas críticas, não publicava narrativas completas".
+- **Chave BibTeX corrigida**: `visaomodernidade_v063` (era `visaomodernidade_v040`).
+- **Seção "Exposição digital" adicionada** no topo do README, com URL pública: `https://danzeroum.github.io/visaomodernidade/`.
+- **Histórico de versões reorganizado**: estritamente do mais novo (v0.6.3) para o mais antigo (v0.2.2), sem misturar ordem temporal.
+- **Contagem de testes padronizada**: 67 regressão + 24 E2E = 91 totais, mencionada consistentemente em README, CHANGELOG e Makefile.
+
+### Alterado
+
+- `Makefile` reescrito com tabs corretas (antes usava espaços, que quebravam `make`).
+- `Makefile` `help` atualizado com novos alvos `site-build` e descrição de `site`.
+
 ## [0.6.2] — 2026-08-14
 
 ### Corrigido (hotfix #2 para CI)
