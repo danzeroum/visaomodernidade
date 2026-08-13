@@ -4,81 +4,156 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gabinete de Leitura — Visão da Modernidade</title>
-  <meta name="description" content="Exposição digital orientada por evidências sobre a presença britânica no Gabinete de Leitura (1837-1838).">
+  <meta name="description" content="Exposição digital orientada por evidências sobre a presença britânica no Gabinete de Leitura (1837-1838), baseada na tese de Maria Angélica Lau Pereira Soares (2006).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <h1>Gabinete de Leitura</h1>
-    <p class="subtitle">Exposição digital orientada por evidências — presença britânica (1837-1838)</p>
-  </header>
+  <!-- SVG sprite (carregado inline para <use> funcionar em file://) -->
+  <div id="svg-sprite-container" aria-hidden="true" style="display:none;"></div>
 
-  <main class="site-main">
-    <section class="hero">
-      <p class="lead">
-        Como uma história publicada em Londres chegava ao Rio de Janeiro —
-        e por que ela não chegava igual?
-      </p>
-      <div class="stats">
-        <div class="stat" data-stat="35">
-          <span class="stat-num">35</span>
-          <span class="stat-label">fascículos</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">92</span>
-          <span class="stat-label">textos ficcionais</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num">10</span>
-          <span class="stat-label">textos de língua inglesa</span>
-        </div>
-        <div class="stat" title="A tese identifica sete versões francesas na Revue Britannique; para textos individuais, a existência não prova a rota.">
-          <span class="stat-num">7</span>
-          <span class="stat-label">versões francesas inferidas</span>
-        </div>
-      </div>
-      <p class="hint">
-        Exposição em construção. Os dados completos estão em <code>data/</code>.
-        Veja <code>docs/README.md</code> para a estratégia de consumo.
-      </p>
-    </section>
+  <!-- Banner de estado (loading/warning/error) -->
+  <div id="state-banner" class="state-banner state-banner--loading" role="status" aria-live="polite">
+    Carregando dados acadêmicos…
+  </div>
 
-    <nav class="site-nav">
+  <div class="app-shell">
+    <header class="site-header">
+      <h1>Gabinete de Leitura</h1>
+      <p class="subtitle">Narrativas em Trânsito — presença britânica (1837–1838)</p>
+    </header>
+
+    <nav class="site-nav" aria-label="Navegação principal">
+      <a href="#inicio">Início</a>
       <a href="#periodico">O Periódico</a>
       <a href="#narrativas">Narrativas em Trânsito</a>
       <a href="#laboratorio">Laboratório de Tradução</a>
       <a href="#pesquisa">Pesquisa e Evidências</a>
     </nav>
 
-    <section id="periodico" class="placeholder">
-      <h2>O Periódico — Linha do tempo</h2>
-      <p>A ser implementado na próxima iteração (P1).</p>
-    </section>
+    <main class="site-main" id="site-main">
+      <!-- Hero -->
+      <section id="inicio" class="hero">
+        <p class="lead">
+          Como uma história publicada em Londres chegava ao Rio de Janeiro —
+          e por que ela não chegava igual?
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-num">35</span>
+            <span class="stat-label">fascículos</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">92</span>
+            <span class="stat-label">textos ficcionais</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">10</span>
+            <span class="stat-label">textos britânicos</span>
+          </div>
+          <div class="stat" title="A tese identifica sete versões francesas na Revue Britannique; para textos individuais, a existência não prova a rota.">
+            <span class="stat-num">7</span>
+            <span class="stat-label">versões francesas</span>
+            <span class="stat-note">Inferidas por exclusão — existência documentada, rota não demonstrada.</span>
+          </div>
+        </div>
+        <div id="badge-legend"></div>
+      </section>
 
-    <section id="narrativas" class="placeholder">
-      <h2>Narrativas em Trânsito — Dossiê por texto</h2>
-      <p>A ser implementado na próxima iteração (P1).</p>
-    </section>
+      <!-- O Periódico — Linha do tempo -->
+      <section id="periodico" class="section">
+        <h2 class="section-title">O Periódico — Linha do tempo</h2>
+        <div id="timeline">
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Carregando linha do tempo…</p>
+          </div>
+        </div>
+      </section>
 
-    <section id="laboratorio" class="placeholder">
-      <h2>Laboratório de Tradução</h2>
-      <p>A ser implementado na próxima iteração (P1). Casos prioritários: Costumes Ingleses, As Honras Hereditárias, Álibi, Esboços Sicilianos.</p>
-    </section>
+      <!-- Narrativas em Trânsito — Lista dos 10 textos -->
+      <section id="narrativas" class="section">
+        <h2 class="section-title">Narrativas em Trânsito — Os dez textos britânicos</h2>
+        <p class="section-intro">
+          Clique em qualquer texto para abrir o dossiê completo com original identificado,
+          fonte declarada, versão francesa, rota efetiva e evidências paginadas.
+        </p>
+        <div id="text-list" class="text-list">
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Carregando textos…</p>
+          </div>
+        </div>
+      </section>
 
-    <section id="pesquisa" class="placeholder">
-      <h2>Pesquisa e Evidências</h2>
-      <p>A ser implementado na próxima iteração (P1).</p>
-    </section>
-  </main>
+      <!-- Laboratório de Tradução -->
+      <section id="laboratorio" class="section">
+        <h2 class="section-title">Laboratório de Tradução</h2>
+        <div id="translation-lab">
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Carregando comparações…</p>
+          </div>
+        </div>
+      </section>
 
-  <footer class="site-footer">
-    <p>
-      Extraído de <strong>Soares, Maria Angélica Lau Pereira (2006)</strong>,
-      <em>Visão da Modernidade</em>, USP/FFLCH.
-      Pacote de dados: <a href="https://github.com/danzeroum/visaomodernidade">github.com/danzeroum/visaomodernidade</a>.
-    </p>
-  </footer>
+      <!-- Pesquisa e Evidências -->
+      <section id="pesquisa" class="section">
+        <h2 class="section-title">Pesquisa e Evidências</h2>
+        <p class="section-intro">
+          Este site consome três JSONs canônicos gerados a partir da tese de Soares (2006).
+          Cada afirmação crítica é sustentada por uma evidência paginada com paginação dupla
+          (PDF e impressa). O status epistêmico distingue o que é <strong>documentado</strong>,
+          <strong>inferido</strong>, <strong>problemático</strong> ou <strong>não identificado</strong>.
+        </p>
+        <div class="evidence-panel">
+          <h5>Como consultar os dados</h5>
+          <div class="evidence-content">
+            <p>
+              Os dados completos estão disponíveis em <code>data/</code>:
+            </p>
+            <ul style="margin:0.5rem 0;padding-left:1.5rem;">
+              <li><code>corpus_britanico_canonico.json</code> — tabela canônica dos 10 textos</li>
+              <li><code>grafo_contextual_v2.json</code> — ambiente editorial e intelectual</li>
+              <li><code>grafo_proveniencia_textual_v3.json</code> — proveniência textual</li>
+              <li><code>relatorio_validacao.json</code> — resultado da validação semântica</li>
+            </ul>
+            <p style="margin-top:0.5rem;">
+              O repositório completo com scripts, testes e documentação está em
+              <a href="https://github.com/danzeroum/visaomodernidade" target="_blank" rel="noopener">github.com/danzeroum/visaomodernidade</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
 
-  <script src="assets/app.js"></script>
+    <!-- Dossiê lateral (overlay + panel) -->
+    <div id="dossier-overlay" class="dossier-overlay" aria-hidden="true"></div>
+    <aside id="dossier-panel" class="dossier-panel" role="dialog" aria-modal="true" aria-labelledby="dossier-title" aria-hidden="true">
+      <div class="dossier-header">
+        <h3 id="dossier-title">—</h3>
+        <button class="dossier-close" aria-label="Fechar dossiê">✕</button>
+      </div>
+      <div class="dossier-body">
+        <div class="loading-message"><div class="spinner"></div></div>
+      </div>
+    </aside>
+
+    <footer class="site-footer">
+      <p>
+        Extraído de <strong>Soares, Maria Angélica Lau Pereira (2006)</strong>,
+        <em>Visão da Modernidade — A presença britânica no Gabinete de Leitura (1837-1838)</em>,
+        USP/FFLCH.
+      </p>
+      <p>
+        Pacote de dados: <a href="https://github.com/danzeroum/visaomodernidade" target="_blank" rel="noopener">github.com/danzeroum/visaomodernidade</a>
+      </p>
+      <div id="footer-meta" class="footer-meta"></div>
+    </footer>
+  </div>
+
+  <script type="module" src="assets/app.js"></script>
 </body>
 </html>
