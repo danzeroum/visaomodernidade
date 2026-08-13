@@ -1,9 +1,11 @@
-# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.2)
+# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.3)
 
-[![Validate academic data](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
+[![Academic data validation](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
 [![Deploy to Pages](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
+> **Exposição digital**: [https://danzeroum.github.io/visaomodernidade/](https://danzeroum.github.io/visaomodernidade/)
 
 Pacote de dados extraído, validado e revisado a partir da tese de Maria Angélica Lau Pereira Soares (2006), ***Visão da Modernidade — A presença britânica no Gabinete de Leitura (1837-1838)***, dissertação de mestrado defendida na FFLCH/USP.
 
@@ -14,6 +16,26 @@ Este repositório contém dois grafos complementares acadêmicamente auditáveis
 
 > ⚠️ **Princípio filológico**: a tese é a fonte de verdade primária. Nenhum dado foi inventado, preenchido por plausibilidade ou derivado de fontes externas sem registro explícito. Hipóteses e inferências estão marcadas com `status_epistemologico` apropriado.
 
+## Exposição digital
+
+Acesse a exposição digital estática (MVP):
+
+> **[https://danzeroum.github.io/visaomodernidade/](https://danzeroum.github.io/visaomodernidade/)**
+
+A exposição inclui:
+- **Início** — hero com estatísticas (35 fascículos, 92 textos ficcionais, 10 textos britânicos, 7 versões francesas)
+- **O Periódico** — linha do tempo dos 35 fascículos com os 10 textos britânicos destacados
+- **Narrativas em Trânsito** — lista dos 10 textos com dossiê lateral (original identificado, fonte declarada, versão francesa, rota efetiva, operações tradutórias, evidências paginadas)
+- **Laboratório de Tradução** — comparador textual em 3 colunas para os 4 casos prioritários (Costumes Ingleses, As Honras Hereditárias, Álibi, Esboços Sicilianos)
+- **Pesquisa e Evidências** — painel de evidências com paginação dupla (PDF + impressa)
+
+Para rodar localmente:
+
+```bash
+make site
+# Abra http://localhost:8000
+```
+
 ## Estrutura do repositório
 
 ```
@@ -21,15 +43,15 @@ Este repositório contém dois grafos complementares acadêmicamente auditáveis
 ├── README.md                                  # Este arquivo
 ├── LICENSE                                    # MIT + nota acadêmica
 ├── CONTRIBUTING.md                            # Princípios filológicos e fluxo de contribuição
-├── CHANGELOG.md                               # Histórico de versões
+├── CHANGELOG.md                               # Histórico de versões (mais recente primeiro)
 ├── pyproject.toml                             # Configuração do pacote Python
 ├── requirements.txt                           # Dependências de execução
-├── requirements-dev.txt                       # Dependências de desenvolvimento
+├── requirements-dev.txt                       # Dependências de desenvolvimento (inclui playwright)
 ├── Makefile                                   # Atalhos: install, build, validate, test, site
 ├── .gitignore
 ├── .github/workflows/
-│   ├── validate-data.yml                      # CI: build + validate + test + sync check
-│   └── deploy-pages.yml                       # Deploy do site/ no GitHub Pages
+│   ├── validate-data.yml                      # CI: build + validate + test (regressão + E2E)
+│   └── deploy-pages.yml                       # Deploy do _site/ no GitHub Pages
 ├── data/
 │   ├── corpus_britanico_canonico.json         # Tabela canônica dos 10 textos britânicos
 │   ├── grafo_contextual_v2.json               # Ambiente editorial, intelectual, institucional
@@ -63,14 +85,26 @@ Este repositório contém dois grafos complementares acadêmicamente auditáveis
 │   ├── test_integridade_grafos.py             # 15 testes (IDs, arestas, evidências, paginação)
 │   ├── test_relatorio_validacao.py            # 9 testes (critérios de aceite Parte H)
 │   ├── test_fixtures_invalidas.py             # 4 testes (testes negativos)
-│   └── fixtures/
-│       ├── corpus_invalido.json
-│       └── grafo_com_aresta_orfa.json
-└── site/
-    ├── index.html                             # MVP da exposição digital (placeholder)
+│   └── e2e/                                   # Testes E2E com Playwright (24 testes)
+│       ├── conftest.py                        # Servidor HTTP + browser Chromium
+│       ├── test_homepage.py                   # 6 testes (título, stats, seções, console)
+│       ├── test_timeline.py                   # 6 testes (35 fascículos, 10 textos, datas)
+│       ├── test_dossier_costumes.py          # 3 testes (identidade, rota, operações, ESC)
+│       └── test_translation_lab.py           # 9 testes (4 textos, 7 operações, 3 colunas)
+└── site/                                      # MVP da exposição digital estática
+    ├── index.html                             # App shell com 5 seções
+    ├── README.md                              # Documentação do site
     └── assets/
-        ├── styles.css
-        └── app.js
+        ├── styles.css                         # Design system (6 status epistêmicos)
+        ├── app.js                             # Orquestrador (4 estados: loading/ready/warning/error)
+        ├── data-loader.js                     # Carrega JSONs + 15 helpers de consulta ao grafo
+        ├── icons.svg                          # SVG sprite (13 ícones epistêmicos)
+        └── renderers/
+            ├── badges.js                      # Selos epistêmicos (ícone+texto+cor)
+            ├── timeline.js                    # Linha do tempo dos 35 fascículos
+            ├── dossier.js                     # Painel lateral de dossiê com rota visual
+            ├── evidence.js                    # Painel de evidência com paginação dupla
+            └── translation-lab.js              # Comparador 3 colunas (4 textos, 7 operações)
 ```
 
 ## Início rápido
@@ -89,15 +123,18 @@ make build
 # Valida os dados (semântica + schemas)
 make validate
 
-# Roda os 67 testes de regressão + 24 testes E2E (Playwright)
+# Roda os 91 testes (67 regressão + 24 E2E com Playwright)
 make test
 
 # Espelha o CI do GitHub Actions localmente
 make ci
 
-# Servir o site/ localmente em http://localhost:8000
+# Monta _site/ e serve localmente (igual ao GitHub Pages)
 make site
+# Abra http://localhost:8000
 ```
+
+> **Nota sobre testes E2E**: se o Chromium do Playwright não estiver instalado, os 24 testes E2E serão **pulados graciosamente** (skipped) em vez de falhar. Execute `python -m playwright install chromium` para habilitá-los.
 
 ## Resumo do pacote
 
@@ -139,8 +176,8 @@ Veja `docs/metodologia.md` para detalhes.
 |---|---------------------|-------|------|----------|-------|
 | 1 | Costumes Ingleses — Um Amador da Vida Campestre | n.30 | 04/03/1838 | A Cockney Country-Gentleman (NMM, jun/1837) | John Poole |
 | 2 | Uma Noite no Mar | n.2 | 20/08/1837 | Davy Jones and the Yankee Privateer (Blackwood's, jul/1830) | não identificado |
-| 3 | O Testamento | n.9 | 08/10/1837 | **não localizado** | George Crabbe (atribuição problemática) |
-| 4 | O Livro da Vida | n.6 | 17/09/1837 | **não localizado** | não identificado |
+| 3 | O Testamento | n.9 | 08/10/1837 | **não localizado** — não houve publicação com o título indicado ("Crabbe's Posthumous Works") | George Crabbe (atribuição não confirmada) |
+| 4 | O Livro da Vida | n.6 | 17/09/1837 | **não localizado** — fonte Retrospective Review problemática (revista de resenhas, não publicava narrativas completas) | não identificado |
 | 5 | O Sedutor | n.10 | 15/10/1837 | **não identificado pela tese** | Washington Irving (americano) |
 | 6 | Manuscrito Achado em uma Casa de Loucos | n.8 | 01/10/1837 | A Manuscript Found in a Madhouse (Literary Souvenir 1829) | Edward Bulwer-Lytton |
 | 7 | As Honras Hereditárias | n.11 | 22/10/1837 | Hereditary Honours (NMM, 1832) | Edward Bulwer-Lytton |
@@ -170,7 +207,7 @@ for g, s in pairs:
 # 3. Validador semântico
 python scripts/validate.py
 
-# 4. Testes de regressão (67 testes)
+# 4. Testes de regressão (67) + E2E (24) = 91 testes
 python -m pytest tests/ -v
 ```
 
@@ -178,38 +215,43 @@ python -m pytest tests/ -v
 
 ### `validate-data.yml` (CI em cada PR/push para main)
 
-1. Instala dependências (`pip install -r requirements-dev.txt && pip install -e .`).
-2. Roda `python scripts/build_all.py` (regenera schemas, corpus, grafos).
-3. Roda `python scripts/validate.py` (validador semântico).
-4. Roda `python -m pytest tests/ -v` (67 testes de regressão).
-5. **Verifica sincronia `data/`↔scripts**: se `git status data/` mostra mudanças após o build, o CI falha (dados committed estão stale).
-6. Upload do `relatorio_validacao.json` como artifact.
+Job único que:
+1. Instala dependências (`pip install -r requirements-dev.txt && pip install -e .`)
+2. Instala Chromium do Playwright (`python -m playwright install chromium --with-deps`)
+3. Roda `python scripts/build_all.py` (regenera schemas, corpus, grafos)
+4. Roda `python scripts/validate.py` (validador semântico)
+5. Roda `python -m pytest tests/ -v --tb=short` (67 regressão + 24 E2E)
+6. Verifica sincronia `data/↔scripts`: se `git status data/` mostra mudanças após o build, o CI falha
 
 ### `deploy-pages.yml` (deploy automático no push para main)
 
-1. Valida os dados (rodando build + validate).
-2. Copia `data/*.json` e `data/schemas/` para `site/data/`.
-3. Faz upload de `site/` como artifact do GitHub Pages.
-4. Deploy em `https://danzeroum.github.io/visaomodernidade/`.
+1. **Valida dados antes do deploy** — roda build + validate + falha explicitamente se `resultado != "aprovado"`
+2. Verifica sincronia `data/↔scripts`
+3. Monta `_site/` com `data/` dentro (permite `fetch('./data/*.json')` no Pages)
+4. **Smoke test via curl** — 14 recursos públicos verificados (HTML, JS, CSS, JSONs, schemas, renderers)
+5. **Verifica integridade dos JSONs** no artefato (sintaxe válida, validação aprovada, corpus com 10 itens)
+6. Deploy em `https://danzeroum.github.io/visaomodernidade/`
 
-## Histórico de versões
+## Histórico de versões (mais recente primeiro)
 
 | Versão | Data | Descrição |
 |--------|------|-----------|
-| v0.2.2 | anterior | Rascunho com fascículos embaralhados, placeholders, manifestação inglesa fabricada |
-| v0.3.0 | 2026-08-14 | Correção dos 12 fascículos/datas; eliminação de placeholders; separação de schemas; 22 divergências documentadas; modelo tri-relacional |
-| v0.3.1 | 2026-08-14 | 4 ajustes finais: offset não universal; mediação rebaixada para `inferido` + nova aresta `TEM_VERSAO_FRANCESA_NA_REVUE`; rota de Costumes `nao_identificado`; divergência interna de Anatomy of Drunkness preservada |
-| **v0.6.2** | **2026-08-14** | **Hotfix CI #2:** testes E2E pulam graciosamente sem Chromium (causa da falha do PR #9); workflow consolidado em job único com Playwright |
-| v0.6.0 | 2026-08-14 | Sprint 2: deploy valida dados antes do Pages (PR1); smoke tests curl no CI (PR2); 24 testes E2E com Playwright (PR2b); 91 testes totais passando |
+| **v0.6.3** | **2026-08-14** | **Sincronização README:** corrigida árvore `site/` com renderers; `make site` agora serve `_site/` (não `site/`); correção Crabbe ("não houve publicação com o título indicado"); BibTeX `visaomodernidade_v063`; seção "Exposição digital" com URL pública |
+| v0.6.2 | 2026-08-14 | Hotfix CI #2: testes E2E pulam graciosamente sem Chromium (causa da falha do PR #9); workflow consolidado em job único com Playwright |
+| v0.6.1 | 2026-08-14 | Hotfix CI #1: corrigidos nomes de schemas em `arquivos_validados` (causa da falha do PR #5); porta dinâmica e timeouts maiores nos testes E2E |
+| v0.6.0 | 2026-08-14 | Sprint 2: deploy valida dados antes do Pages (PR1); smoke tests curl no CI (PR2); 24 testes E2E com Playwright (PR2b); 91 testes totais |
 | v0.5.0 | 2026-08-14 | MVP da exposição digital: site/ com renderers modulares (timeline, dossier, evidence, translation-lab), deploy-pages.yml com data/ no artefato do Pages |
-| v0.4.0 | 2026-08-14 | Engenharia de projeto: `pyproject.toml`, `Makefile`, `src/visaomodernidade/` modular, 67 testes de regressão, GitHub Actions CI/CD, `CONTRIBUTING.md`, `CHANGELOG.md`, `docs/metodologia.md`, `docs/modelo-de-dados.md`, `site/` placeholder |
+| v0.4.0 | 2026-08-14 | Engenharia de projeto: `pyproject.toml`, `Makefile`, `src/visaomodernidade/` modular, 67 testes de regressão, GitHub Actions CI/CD, `CONTRIBUTING.md`, `CHANGELOG.md`, `docs/metodologia.md`, `docs/modelo-de-dados.md` |
+| v0.3.1 | 2026-08-14 | 4 ajustes finais: offset não universal; mediação rebaixada para `inferido` + nova aresta `TEM_VERSAO_FRANCESA_NA_REVUE`; rota de Costumes `nao_identificado`; divergência interna de Anatomy of Drunkness preservada |
+| v0.3.0 | 2026-08-14 | Correção dos 12 fascículos/datas; eliminação de placeholders; separação de schemas; 22 divergências documentadas; modelo tri-relacional |
+| v0.2.2 | anterior | Rascunho com fascículos embaralhados, placeholders, manifestação inglesa fabricada |
 
 Veja `CHANGELOG.md` para detalhes completos.
 
 ## Lacunas reais que permanecem abertas na tese
 
-1. **O Testamento** — original não localizado; atribuição a George Crabbe não confirmada nem negada; fonte declarada (Crabbe's Posthumous Works) inexistente.
-2. **O Livro da Vida** — original não localizado; fonte declarada (Retrospective Review) problemática.
+1. **O Testamento** — original não localizado; não houve publicação com o título indicado ("Crabbe's Posthumous Works"); atribuição a George Crabbe não confirmada nem negada.
+2. **O Livro da Vida** — original não localizado; fonte declarada (Retrospective Review) problemática — era uma revista de resenhas críticas, não publicava narrativas completas.
 3. **O Sedutor** — tese não identifica título, veículo ou data de publicação original do texto de Washington Irving.
 4. **Sicilian Facts** — tese não fornece data específica de publicação em The Metropolitan.
 5. **Edward D. Baynes** — sem verbete no Anexo 3; apenas menção no corpo do texto.
@@ -234,8 +276,8 @@ MIT — veja `LICENSE`.
 ## Como citar este pacote
 
 ```bibtex
-@misc{visaomodernidade_v040,
-  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.2)},
+@misc{visaomodernidade_v063,
+  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.3)},
   author = {Extraído e validado a partir de Soares, Maria Angélica Lau Pereira (2006)},
   year   = {2026},
   note   = {Grafo contextual e grafo de proveniência textual dos dez textos britânicos do Gabinete de Leitura (1837-1838)},
