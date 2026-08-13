@@ -1,0 +1,44 @@
+name: Academic data validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  academic-data-validation:
+    name: Academic data validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Build schemas and academic data
+        run: python scripts/build_all.py
+
+      - name: Run semantic validation
+        run: python scripts/validate.py
+
+      - name: Run regression tests
+        run: python -m pytest tests/ -q
+
+      - name: Verify generated data is synchronized
+        run: git diff --exit-code -- data/
