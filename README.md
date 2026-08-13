@@ -1,4 +1,4 @@
-# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.0)
+# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.1)
 
 [![Validate academic data](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
 [![Deploy to Pages](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml)
@@ -199,7 +199,8 @@ python -m pytest tests/ -v
 | v0.2.2 | anterior | Rascunho com fascículos embaralhados, placeholders, manifestação inglesa fabricada |
 | v0.3.0 | 2026-08-14 | Correção dos 12 fascículos/datas; eliminação de placeholders; separação de schemas; 22 divergências documentadas; modelo tri-relacional |
 | v0.3.1 | 2026-08-14 | 4 ajustes finais: offset não universal; mediação rebaixada para `inferido` + nova aresta `TEM_VERSAO_FRANCESA_NA_REVUE`; rota de Costumes `nao_identificado`; divergência interna de Anatomy of Drunkness preservada |
-| **v0.6.0** | **2026-08-14** | **Sprint 2:** deploy valida dados antes do Pages (PR1); smoke tests curl no CI (PR2); 24 testes E2E com Playwright (PR2b); 91 testes totais passando |
+| **v0.6.1** | **2026-08-14** | **Hotfix CI:** corrigidos nomes de schemas em `arquivos_validados` (causa da falha do PR #5); porta dinâmica e timeouts maiores nos testes E2E |
+| v0.6.0 | 2026-08-14 | Sprint 2: deploy valida dados antes do Pages (PR1); smoke tests curl no CI (PR2); 24 testes E2E com Playwright (PR2b); 91 testes totais passando |
 | v0.5.0 | 2026-08-14 | MVP da exposição digital: site/ com renderers modulares (timeline, dossier, evidence, translation-lab), deploy-pages.yml com data/ no artefato do Pages |
 | v0.4.0 | 2026-08-14 | Engenharia de projeto: `pyproject.toml`, `Makefile`, `src/visaomodernidade/` modular, 67 testes de regressão, GitHub Actions CI/CD, `CONTRIBUTING.md`, `CHANGELOG.md`, `docs/metodologia.md`, `docs/modelo-de-dados.md`, `site/` placeholder |
 
@@ -234,7 +235,7 @@ MIT — veja `LICENSE`.
 
 ```bibtex
 @misc{visaomodernidade_v040,
-  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.0)},
+  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.1)},
   author = {Extraído e validado a partir de Soares, Maria Angélica Lau Pereira (2006)},
   year   = {2026},
   note   = {Grafo contextual e grafo de proveniência textual dos dez textos britânicos do Gabinete de Leitura (1837-1838)},

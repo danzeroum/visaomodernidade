@@ -46,29 +46,40 @@ def _site_dir():
 
 @pytest.fixture(scope="session")
 def http_server(_site_dir):
-    """Sobe um servidor HTTP na porta 8091 servindo _site/."""
-    port = 8091
+    """Sobe um servidor HTTP em porta livre servindo _site/."""
+    import socket
+
+    # Encontra porta livre disponível
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 0))
+    port = sock.getsockname()[1]
+    sock.close()
+
     cwd = str(_site_dir)
 
     proc = subprocess.Popen(
-        [sys.executable, "-m", "http.server", str(port)],
+        [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
         cwd=cwd,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
     # Aguarda o servidor subir
-    time.sleep(1.0)
+    time.sleep(1.5)  # Mais tempo para CI mais lento
 
     # Verifica que está respondendo
     import urllib.request
-    try:
-        urllib.request.urlopen(f"http://localhost:{port}/", timeout=2).read()
-    except Exception as e:
+    for attempt in range(5):
+        try:
+            urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=2).read()
+            break
+        except Exception:
+            time.sleep(0.5)
+    else:
         proc.terminate()
         proc.wait()
-        pytest.fail(f"Servidor HTTP não subiu em :{port}: {e}")
+        pytest.fail(f"Servidor HTTP não subiu em :{port}")
 
-    yield f"http://localhost:{port}"
+    yield f"http://127.0.0.1:{port}"
 
     proc.terminate()
     proc.wait()
@@ -92,12 +103,12 @@ def browser_context(http_server):
         page.on("console", lambda msg: console_errors.append(msg) if msg.type == "error" else None)
         page.on("pageerror", lambda err: console_errors.append(f"pageerror: {err}"))
 
-        page.goto(http_server)
+        page.goto(http_server, wait_until="networkidle", timeout=30000)
         # Aguarda o carregamento dos dados (estado ready ou warning)
         try:
             page.wait_for_function(
                 "() => { const b = document.getElementById('state-banner'); return b && (b.style.display === 'none' || b.className.includes('warning')); }",
-                timeout=10000
+                timeout=15000
             )
         except Exception:
             pass  # Continua mesmo se timeout (testes subsequentes vão falhar)

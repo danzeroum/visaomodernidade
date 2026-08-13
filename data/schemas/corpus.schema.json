@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "schema_corpus_britanico_canonico.json",
+  "$id": "schemas/corpus.schema.json",
   "title": "Corpus Britânico Canônico — Gabinete de Leitura (1837-1838)",
   "description": "Valida a tabela canônica dos dez textos ficcionais britânicos identificados na tese de Soares (2006).",
   "type": "object",

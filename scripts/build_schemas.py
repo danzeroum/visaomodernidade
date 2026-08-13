@@ -25,7 +25,7 @@ STATUS_ENUM = ["documentado", "identificado", "inferido", "hipotese", "problemat
 # ---------- 1. Schema do corpus canônico ----------
 schema_corpus = {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "schema_corpus_britanico_canonico.json",
+    "$id": "schemas/corpus.schema.json",
     "title": "Corpus Britânico Canônico — Gabinete de Leitura (1837-1838)",
     "description": "Valida a tabela canônica dos dez textos ficcionais britânicos identificados na tese de Soares (2006).",
     "type": "object",
@@ -160,7 +160,7 @@ TIPOS_ARESTA_CONTEXTUAL = [
 
 schema_contextual = {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "schema_grafo_contextual_v2.json",
+    "$id": "schemas/contextual.schema.json",
     "title": "Grafo Contextual v2 — Ambiente do Gabinete de Leitura",
     "description": "Valida o grafo contextual: ambiente editorial, intelectual, institucional e histórico do Gabinete de Leitura segundo Soares (2006).",
     "type": "object",
@@ -279,7 +279,7 @@ TIPOS_ARESTA_PROV = [
 
 schema_proveniencia = {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "schema_grafo_proveniencia_textual_v3.json",
+    "$id": "schemas/proveniencia.schema.json",
     "title": "Grafo de Proveniência Textual v3",
     "description": "Valida o grafo de proveniência: obras, manifestações, fontes declaradas, originais identificados, mediações, comparações e operações tradutórias.",
     "type": "object",

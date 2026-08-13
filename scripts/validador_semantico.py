@@ -412,9 +412,9 @@ relatorio = {
         "corpus_britanico_canonico.json",
         "grafo_contextual_v2.json",
         "grafo_proveniencia_textual_v3.json",
-        "schema_corpus_britanico_canonico.json",
-        "schema_grafo_contextual_v2.json",
-        "schema_grafo_proveniencia_textual_v3.json"
+        "schemas/corpus.schema.json",
+        "schemas/contextual.schema.json",
+        "schemas/proveniencia.schema.json"
     ],
     "erros": erros,
     "avisos": avisos,

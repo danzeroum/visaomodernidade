@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "schema_grafo_contextual_v2.json",
+  "$id": "schemas/contextual.schema.json",
   "title": "Grafo Contextual v2 — Ambiente do Gabinete de Leitura",
   "description": "Valida o grafo contextual: ambiente editorial, intelectual, institucional e histórico do Gabinete de Leitura segundo Soares (2006).",
   "type": "object",
