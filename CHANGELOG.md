@@ -5,6 +5,27 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.5.0] — 2026-08-14
+
+### Adicionado
+- **MVP da exposição digital estática** em `site/`:
+  - `index.html` — app shell completo com 5 seções (Início, O Periódico, Narrativas em Trânsito, Laboratório de Tradução, Pesquisa e Evidências).
+  - `assets/styles.css` — design system sepia+papel com 6 status epistêmicos visualmente distintos (ícone+texto+cor, nunca cor sozinha).
+  - `assets/app.js` — orquestrador com 4 estados (loading, ready, warning, error) que lê `relatorio_validacao.json` primeiro.
+  - `assets/data-loader.js` — carrega os 4 JSONs via `fetch()` + helpers de consulta ao grafo (findNode, findEdges, findBrazilianManifestation, findOriginalManifestation, etc.).
+  - `assets/icons.svg` — SVG sprite com 13 ícones (check, star, approx, hypothesis, warning, unknown, arrows, book, link, doc, periodical).
+  - `assets/renderers/badges.js` — selos epistêmicos com ícone SVG + texto + cor + tooltip + `aria-label`.
+  - `assets/renderers/timeline.js` — linha do tempo dos 35 fascículos com os 10 textos britânicos destacados.
+  - `assets/renderers/dossier.js` — painel lateral de dossiê com diagrama de rota visual (original → fonte declarada → versão francesa → versão brasileira → rota efetiva).
+  - `assets/renderers/evidence.js` — painel de evidência com paginação dupla (PDF + impressa) e citação literal.
+  - `assets/renderers/translation-lab.js` — laboratório de comparação com layout 3 colunas (desktop) / vertical (mobile) para os 4 casos prioritários.
+  - `site/README.md` — documentação do site.
+- **Atualização do `deploy-pages.yml`**: agora monta `_site/` com `data/` dentro, permitindo `fetch('./data/*.json')` no GitHub Pages.
+
+### Alterado
+- `deploy-pages.yml` agora copia `data/*.json` e `data/schemas/` para `_site/data/` antes do deploy.
+- Site agora é uma aplicação ES6 module (`<script type="module">`) com renderização client-side dos dados.
+
 ## [0.4.0] — 2026-08-14
 
 ### Adicionado
