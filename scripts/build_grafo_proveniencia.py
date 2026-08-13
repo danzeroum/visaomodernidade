@@ -22,7 +22,7 @@ Hierarquia de confiança:
 import json
 from pathlib import Path
 
-OUT = Path("/home/z/my-project/output/grafo_proveniencia_textual_v3.json")
+OUT = Path(__file__).resolve().parent.parent / "data" / "grafo_proveniencia_textual_v3.json"
 
 # ---------- Evidências (com paginação dupla) ----------
 # Formato do ID: evidence:soares:2006:pdf-p{inicio}-{fim}:{slug}

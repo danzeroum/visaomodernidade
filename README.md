@@ -1,4 +1,9 @@
-# Gabinete de Leitura — Pacote de Dados Versionado (v3.1)
+# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.4.0)
+
+[![Validate academic data](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
+[![Deploy to Pages](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 Pacote de dados extraído, validado e revisado a partir da tese de Maria Angélica Lau Pereira Soares (2006), ***Visão da Modernidade — A presença britânica no Gabinete de Leitura (1837-1838)***, dissertação de mestrado defendida na FFLCH/USP.
 
@@ -14,25 +19,84 @@ Este repositório contém dois grafos complementares acadêmicamente auditáveis
 ```
 .
 ├── README.md                                  # Este arquivo
-├── LICENSE                                    # MIT
+├── LICENSE                                    # MIT + nota acadêmica
+├── CONTRIBUTING.md                            # Princípios filológicos e fluxo de contribuição
+├── CHANGELOG.md                               # Histórico de versões
+├── pyproject.toml                             # Configuração do pacote Python
+├── requirements.txt                           # Dependências de execução
+├── requirements-dev.txt                       # Dependências de desenvolvimento
+├── Makefile                                   # Atalhos: install, build, validate, test, site
 ├── .gitignore
+├── .github/workflows/
+│   ├── validate-data.yml                      # CI: build + validate + test + sync check
+│   └── deploy-pages.yml                       # Deploy do site/ no GitHub Pages
 ├── data/
 │   ├── corpus_britanico_canonico.json         # Tabela canônica dos 10 textos britânicos
 │   ├── grafo_contextual_v2.json               # Ambiente editorial, intelectual, institucional
-│   ├── grafo_proveniencia_textual_v3.json     # Proveniência textual: obras, manifestações, fontes, operações
-│   ├── schema_corpus_britanico_canonico.json  # JSON Schema Draft-07 do corpus
-│   ├── schema_grafo_contextual_v2.json         # JSON Schema Draft-07 do grafo contextual
-│   ├── schema_grafo_proveniencia_textual_v3.json
-│   └── relatorio_validacao.json               # Resultado da validação sintática, estrutural e semântica
+│   ├── grafo_proveniencia_textual_v3.json     # Proveniência textual
+│   ├── relatorio_validacao.json               # Resultado da validação semântica
+│   └── schemas/
+│       ├── corpus.schema.json                 # JSON Schema Draft-07 do corpus
+│       ├── contextual.schema.json             # JSON Schema Draft-07 do grafo contextual
+│       └── proveniencia.schema.json           # JSON Schema Draft-07 do grafo de proveniência
 ├── docs/
-│   ├── README.md                              # Documentação detalhada do pacote (v3.1)
-│   └── relatorio_divergencias.md              # 22 divergências documentadas entre rascunhos e a tese
-└── scripts/
-    ├── build_corpus_canonico.py               # Gera o corpus canônico
-    ├── build_grafo_contextual.py              # Gera o grafo contextual
-    ├── build_grafo_proveniencia.py            # Gera o grafo de proveniência
-    ├── build_schemas.py                       # Gera os três JSON Schemas
-    └── validador_semantico.py                 # Validador semântico (regras que o JSON Schema não resolve)
+│   ├── README.md                              # Documentação detalhada
+│   ├── metodologia.md                         # Princípios filológicos e regras
+│   ├── modelo-de-dados.md                     # Estrutura dos JSONs e regras de validação
+│   └── relatorio_divergencias.md              # 22 divergências documentadas
+├── scripts/
+│   ├── build_all.py                           # Ponto de entrada único para regenerar tudo
+│   ├── validate.py                            # Ponto de entrada único para validação
+│   ├── build_schemas.py                       # Gera os 3 JSON Schemas
+│   ├── build_corpus_canonico.py               # Gera o corpus canônico
+│   ├── build_grafo_contextual.py              # Gera o grafo contextual
+│   ├── build_grafo_proveniencia.py            # Gera o grafo de proveniência
+│   └── validador_semantico.py                 # Validador semântico (13 regras extras)
+├── src/visaomodernidade/
+│   ├── __init__.py
+│   ├── config.py                              # Caminhos, constantes, vocabulário controlado
+│   └── cli.py                                 # Entry points (visaomodernidade-build, -validate)
+├── tests/
+│   ├── conftest.py                            # Fixtures compartilhadas
+│   ├── test_corpus_canonico.py                # 33 testes (10 textos + ajustes v3.1 + placeholders)
+│   ├── test_schema_validacao.py               # 5 testes (schemas Draft-07)
+│   ├── test_integridade_grafos.py             # 15 testes (IDs, arestas, evidências, paginação)
+│   ├── test_relatorio_validacao.py            # 9 testes (critérios de aceite Parte H)
+│   ├── test_fixtures_invalidas.py             # 4 testes (testes negativos)
+│   └── fixtures/
+│       ├── corpus_invalido.json
+│       └── grafo_com_aresta_orfa.json
+└── site/
+    ├── index.html                             # MVP da exposição digital (placeholder)
+    └── assets/
+        ├── styles.css
+        └── app.js
+```
+
+## Início rápido
+
+```bash
+# Clone o repositório
+git clone https://github.com/danzeroum/visaomodernidade.git
+cd visaomodernidade
+
+# Instale as dependências (execução + desenvolvimento)
+make dev
+
+# Regenera todos os dados a partir dos scripts
+make build
+
+# Valida os dados (semântica + schemas)
+make validate
+
+# Roda os 67 testes de regressão
+make test
+
+# Espelha o CI do GitHub Actions localmente
+make ci
+
+# Servir o site/ localmente em http://localhost:8000
+make site
 ```
 
 ## Resumo do pacote
@@ -50,6 +114,7 @@ Este repositório contém dois grafos complementares acadêmicamente auditáveis
 | Erros de validação (alta gravidade) | 0 |
 | Placeholders remanescentes | 0 |
 | Arestas órfãs | 0 |
+| **Testes de regressão** | **67 (todos passando)** |
 
 ## Status epistemológico
 
@@ -63,6 +128,8 @@ Toda afirmação usa um dos seis status abaixo, garantindo distinção visual en
 | `hipotese` | Possibilidade acadêmica plausível, mas sem confirmação documental suficiente. |
 | `problematico` | Fonte declarada inconsistente, original não localizado, atribuição duvidosa ou conflito documental. |
 | `nao_identificado` | Informação ausente ou ainda não localizada. |
+
+Veja `docs/metodologia.md` para detalhes.
 
 ## Os dez textos do corpus
 
@@ -82,37 +149,57 @@ Toda afirmação usa um dos seis status abaixo, garantindo distinção visual en
 ## Como reproduzir a validação
 
 ```bash
-# Requer Python 3.8+ e jsonschema
-pip install jsonschema
+# 1. Sintaxe JSON
+for f in data/*.json data/schemas/*.json; do python -c "import json; json.load(open('$f'))" && echo "OK: $f"; done
 
-# 1. Validar sintaxe JSON
-for f in data/*.json; do python3 -c "import json; json.load(open('$f'))" && echo "OK: $f"; done
-
-# 2. Validar cada JSON contra seu schema
-python3 -c "
+# 2. Cada JSON contra seu schema
+python -c "
 import json, jsonschema
 pairs = [
-    ('data/corpus_britanico_canonico.json', 'data/schema_corpus_britanico_canonico.json'),
-    ('data/grafo_contextual_v2.json', 'data/schema_grafo_contextual_v2.json'),
-    ('data/grafo_proveniencia_textual_v3.json', 'data/schema_grafo_proveniencia_textual_v3.json'),
+    ('data/corpus_britanico_canonico.json', 'data/schemas/corpus.schema.json'),
+    ('data/grafo_contextual_v2.json', 'data/schemas/contextual.schema.json'),
+    ('data/grafo_proveniencia_textual_v3.json', 'data/schemas/proveniencia.schema.json'),
 ]
 for g, s in pairs:
     jsonschema.validate(json.load(open(g)), json.load(open(s)))
     print(f'OK: {g}')
 "
 
-# 3. Validador semântico (regras que o JSON Schema não resolve sozinho)
-python3 scripts/validador_semantico.py
-# Saída: data/relatorio_validacao.json
+# 3. Validador semântico
+python scripts/validate.py
+
+# 4. Testes de regressão (67 testes)
+python -m pytest tests/ -v
 ```
+
+## Automação CI/CD
+
+### `validate-data.yml` (CI em cada PR/push para main)
+
+1. Instala dependências (`pip install -r requirements-dev.txt && pip install -e .`).
+2. Roda `python scripts/build_all.py` (regenera schemas, corpus, grafos).
+3. Roda `python scripts/validate.py` (validador semântico).
+4. Roda `python -m pytest tests/ -v` (67 testes de regressão).
+5. **Verifica sincronia `data/`↔scripts**: se `git status data/` mostra mudanças após o build, o CI falha (dados committed estão stale).
+6. Upload do `relatorio_validacao.json` como artifact.
+
+### `deploy-pages.yml` (deploy automático no push para main)
+
+1. Valida os dados (rodando build + validate).
+2. Copia `data/*.json` e `data/schemas/` para `site/data/`.
+3. Faz upload de `site/` como artifact do GitHub Pages.
+4. Deploy em `https://danzeroum.github.io/visaomodernidade/`.
 
 ## Histórico de versões
 
 | Versão | Data | Descrição |
 |--------|------|-----------|
-| v2.2 | anterior | Rascunho com fascículos embaralhados, placeholders "c1830", manifestação inglesa fabricada de O Sedutor, aresta `TRADUZIDA_DE` indevida |
-| v3.0 | 2026-08-14 | Correção dos 12 fascículos/datas; eliminação de placeholders; separação de schemas; relatório de divergências; modelo tri-relacional (fonte declarada / original / mediação) |
-| **v3.1** | **2026-08-14** | **Quatro ajustes finais de revisão:** (1) offset de paginação não universal; (2) mediação francesa rebaixada para `inferido` com nova aresta `TEM_VERSAO_FRANCESA_NA_REVUE`; (3) rota de Costumes Ingleses rebaixada para `nao_identificado`; (4) divergência interna da tese sobre *The Anatomy of Drunkness* preservada. |
+| v0.2.2 | anterior | Rascunho com fascículos embaralhados, placeholders, manifestação inglesa fabricada |
+| v0.3.0 | 2026-08-14 | Correção dos 12 fascículos/datas; eliminação de placeholders; separação de schemas; 22 divergências documentadas; modelo tri-relacional |
+| v0.3.1 | 2026-08-14 | 4 ajustes finais: offset não universal; mediação rebaixada para `inferido` + nova aresta `TEM_VERSAO_FRANCESA_NA_REVUE`; rota de Costumes `nao_identificado`; divergência interna de Anatomy of Drunkness preservada |
+| **v0.4.0** | **2026-08-14** | **Engenharia de projeto:** `pyproject.toml`, `Makefile`, `src/visaomodernidade/` modular, 67 testes de regressão, GitHub Actions CI/CD, `CONTRIBUTING.md`, `CHANGELOG.md`, `docs/metodologia.md`, `docs/modelo-de-dados.md`, `site/` placeholder |
+
+Veja `CHANGELOG.md` para detalhes completos.
 
 ## Lacunas reais que permanecem abertas na tese
 
@@ -142,11 +229,11 @@ MIT — veja `LICENSE`.
 ## Como citar este pacote
 
 ```bibtex
-@misc{gabinete_leitura_pacote_v31,
-  title  = {Gabinete de Leitura — Pacote de Dados Versionado (v3.1)},
+@misc{visaomodernidade_v040,
+  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.4.0)},
   author = {Extraído e validado a partir de Soares, Maria Angélica Lau Pereira (2006)},
   year   = {2026},
   note   = {Grafo contextual e grafo de proveniência textual dos dez textos britânicos do Gabinete de Leitura (1837-1838)},
-  url    = {https://github.com/SEU_USUARIO/gabinete-leitura-dados}
+  url    = {https://github.com/danzeroum/visaomodernidade}
 }
 ```

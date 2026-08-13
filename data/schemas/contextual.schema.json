@@ -1,0 +1,389 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "schema_grafo_contextual_v2.json",
+  "title": "Grafo Contextual v2 — Ambiente do Gabinete de Leitura",
+  "description": "Valida o grafo contextual: ambiente editorial, intelectual, institucional e histórico do Gabinete de Leitura segundo Soares (2006).",
+  "type": "object",
+  "required": [
+    "versao",
+    "data_geracao",
+    "vocabulario_controlado",
+    "nos",
+    "arestas",
+    "evidencias"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "versao": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "data_geracao": {
+      "type": "string",
+      "format": "date"
+    },
+    "metadados_projeto": {
+      "type": "object"
+    },
+    "vocabulario_controlado": {
+      "type": "object",
+      "required": [
+        "tipos_no",
+        "tipos_aresta",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tipos_no": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "enum": [
+            [
+              "Tese",
+              "Capitulo",
+              "Secao",
+              "Periodico",
+              "Fasciculo",
+              "Instituicao",
+              "Tipografia",
+              "Livraria",
+              "Pessoa",
+              "ObraAbstrata",
+              "ManifestacaoTextual",
+              "Conceito",
+              "Tema",
+              "MovimentoLiterario",
+              "Local",
+              "ReferenciaBibliografica",
+              "Evidencia",
+              "Argumento"
+            ]
+          ],
+          "minItems": 18
+        },
+        "tipos_aresta": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "enum": [
+            [
+              "AUTORA_DE",
+              "ORIENTA",
+              "ANALISA",
+              "PUBLICADA_EM",
+              "IMPRESSA_EM",
+              "VENDIDA_EM",
+              "REDIGE",
+              "COLABORA_COM",
+              "CONTRIBUI_PARA",
+              "REPUBLICADA_EM",
+              "RELACIONA_SE_A",
+              "CITA",
+              "SUSTENTA",
+              "ASSOCIA_SE_A",
+              "CONTEXTO_DE",
+              "INTEGRA",
+              "INFLUENCIA",
+              "TEM_TEMA"
+            ]
+          ],
+          "minItems": 18
+        },
+        "status_epistemologico": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "enum": [
+            [
+              "documentado",
+              "identificado",
+              "inferido",
+              "hipotese",
+              "problematico",
+              "nao_identificado"
+            ]
+          ],
+          "minItems": 6
+        }
+      }
+    },
+    "nos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/noContextual"
+      }
+    },
+    "arestas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/arestaContextual"
+      }
+    },
+    "evidencias": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/evidencia"
+      }
+    }
+  },
+  "definitions": {
+    "noContextual": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]+:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "enum": [
+            "Tese",
+            "Capitulo",
+            "Secao",
+            "Periodico",
+            "Fasciculo",
+            "Instituicao",
+            "Tipografia",
+            "Livraria",
+            "Pessoa",
+            "ObraAbstrata",
+            "ManifestacaoTextual",
+            "Conceito",
+            "Tema",
+            "MovimentoLiterario",
+            "Local",
+            "ReferenciaBibliografica",
+            "Evidencia",
+            "Argumento"
+          ]
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "atributos": {
+          "type": "object"
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "justificativa": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "arestaContextual": {
+      "type": "object",
+      "required": [
+        "id",
+        "origem",
+        "destino",
+        "tipo",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^edge:[a-z0-9-]+$"
+        },
+        "origem": {
+          "type": "string",
+          "pattern": "^[a-z]+:[a-z0-9:-]+$"
+        },
+        "destino": {
+          "type": "string",
+          "pattern": "^[a-z]+:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "enum": [
+            "AUTORA_DE",
+            "ORIENTA",
+            "ANALISA",
+            "PUBLICADA_EM",
+            "IMPRESSA_EM",
+            "VENDIDA_EM",
+            "REDIGE",
+            "COLABORA_COM",
+            "CONTRIBUI_PARA",
+            "REPUBLICADA_EM",
+            "RELACIONA_SE_A",
+            "CITA",
+            "SUSTENTA",
+            "ASSOCIA_SE_A",
+            "CONTEXTO_DE",
+            "INTEGRA",
+            "INFLUENCIA",
+            "TEM_TEMA"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^evidence:[a-z0-9:-]+$"
+          }
+        },
+        "observacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "justificativa": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "evidencia": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo",
+        "titulo",
+        "fonte",
+        "tipo_evidencia",
+        "status_epistemologico"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^evidence:[a-z0-9:-]+$"
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "Evidencia"
+          ]
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fonte": {
+          "type": "object",
+          "required": [
+            "obra",
+            "ano",
+            "arquivo"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "obra": {
+              "type": "string"
+            },
+            "ano": {
+              "type": "integer"
+            },
+            "arquivo": {
+              "type": "string"
+            },
+            "pagina_pdf_inicio": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pagina_pdf_fim": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pagina_impressa_inicio": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pagina_impressa_fim": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            }
+          }
+        },
+        "tipo_evidencia": {
+          "type": "string"
+        },
+        "conteudo": {
+          "type": "string"
+        },
+        "citacao": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_epistemologico": {
+          "enum": [
+            "documentado",
+            "identificado",
+            "inferido",
+            "hipotese",
+            "problematico",
+            "nao_identificado"
+          ]
+        }
+      }
+    }
+  }
+}

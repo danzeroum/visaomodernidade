@@ -1,5 +1,5 @@
 {
-  "$schema": "./schema_corpus_britanico_canonico.json",
+  "$schema": "./schemas/corpus.schema.json",
   "versao": "1.1.0",
   "data_geracao": "2026-08-14",
   "fonte_primaria": {

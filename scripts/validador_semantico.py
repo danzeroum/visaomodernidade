@@ -24,7 +24,7 @@ import re
 from pathlib import Path
 from collections import Counter
 
-OUT_DIR = Path("/home/z/my-project/output")
+OUT_DIR = Path(__file__).resolve().parent.parent / "data"
 REPORT_PATH = OUT_DIR / "relatorio_validacao.json"
 
 # ---------- Carrega todos os arquivos ----------

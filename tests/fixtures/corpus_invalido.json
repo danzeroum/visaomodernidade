@@ -1,0 +1,43 @@
+{
+  "$schema": "./schemas/corpus.schema.json",
+  "versao": "0.0.0-broken",
+  "data_geracao": "2026-08-14",
+  "fonte_primaria": {
+    "arquivo": "TESE_FAKE.pdf",
+    "autora": "Fixture",
+    "ano": 2025
+  },
+  "itens": [
+    {
+      "id": "corpus:item-faltando",
+      "titulo_gabinete": "Apenas um item",
+      "titulo_original": null,
+      "autor_original": null,
+      "autor_status": "nao_identificado",
+      "origem_linguistica": "en",
+      "fasciculos": [
+        {"numero": 1, "data_iso": "1837-01-01", "paginas_periodico": "1-2", "papel": "publicacao"}
+      ],
+      "fonte_declarada_no_gabinete": {
+        "referencia": null,
+        "status_epistemologico": "nao_identificado"
+      },
+      "fonte_original_identificada": {
+        "veiculo": null,
+        "data": null,
+        "status_epistemologico": "nao_identificado"
+      },
+      "original_identificado": false,
+      "rota_tradutoria": {
+        "status": "nao_identificado",
+        "descricao": null
+      },
+      "mediacao_francesa": {
+        "status": "nao_identificado",
+        "descricao": null
+      },
+      "operacoes_tradutorias_ids": [],
+      "evidencias_ids": []
+    }
+  ]
+}
