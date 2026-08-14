@@ -103,7 +103,7 @@ export function createEvidenceButton(evidence) {
 /**
  * Mostra a evidência em um modal centralizado.
  */
-function showEvidenceModal(evidence) {
+export function showEvidenceModal(evidence) {
   // Remove modal existente
   const existing = document.getElementById('evidence-modal');
   if (existing) existing.remove();

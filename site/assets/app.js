@@ -19,6 +19,7 @@ import { renderContextual } from './renderers/contextual.js';
 import { createBadge, createBadgeLegend } from './renderers/badges.js';
 import { workIdForCorpus } from './data-loader.js';
 import { initResearchMode, updateTechnicalPanel } from './renderers/research-mode.js';
+import { showEvidenceModal } from './renderers/evidence.js';
 
 const state = {
   corpus: null,
@@ -261,6 +262,21 @@ function openDossierForCorpusId(corpusId) {
   // Atualiza painel técnico se em modo pesquisar
   updateTechnicalPanel(corpusId);
 
+  // Adiciona metadados técnicos ao dossiê se em modo pesquisar
+  if (document.body.classList.contains('mode-pesquisar')) {
+    setTimeout(() => {
+      // Import dinâmico não é necessário — a função está no escopo do research-mode
+      // mas precisamos chamá-la indiretamente
+      const dossierBody = document.querySelector('.dossier-body');
+      if (dossierBody && !dossierBody.querySelector('.dossier-technical')) {
+        // Re-dispara a função adicionando a seção técnica
+        // Usa window.__visaomodernidade se disponível, ou aplica via applyMode
+        const event = new Event('dossier-opened');
+        document.dispatchEvent(event);
+      }
+    }, 100);
+  }
+
   // Marca card selecionado
   document.querySelectorAll('.text-card').forEach(c => {
     c.classList.toggle('text-card--selected', c.dataset.corpusId === corpusId);
@@ -392,6 +408,35 @@ function handleDeepLinks() {
     }, 800);
     return;
   }
+
+  // #evidencia=evidence:soares:2006:pdf-p106-107:costumes-atenuacao-ironia
+  const evidenceMatch = hash.match(/#evidencia=([^&]+)/);
+  if (evidenceMatch) {
+    const evidenceId = decodeURIComponent(evidenceMatch[1]);
+    const tryOpen = (attempts = 0) => {
+      if (state.proveniencia) {
+        openEvidenceFromDeepLink(evidenceId);
+      } else if (attempts < 50) {
+        setTimeout(() => tryOpen(attempts + 1), 100);
+      }
+    };
+    tryOpen();
+    return;
+  }
+}
+
+function openEvidenceFromDeepLink(evidenceId) {
+  const evidence = state.proveniencia.evidencias.find(e => e.id === evidenceId);
+  if (!evidence) {
+    showStateBanner(ESTADO.WARNING, `Evidência não encontrada: ${evidenceId}`);
+    return;
+  }
+  // Rola até a seção de pesquisa
+  document.getElementById('pesquisa')?.scrollIntoView({ behavior: 'smooth' });
+  // Abre o modal de evidência (importado de evidence.js)
+  setTimeout(() => {
+    showEvidenceModal(evidence);
+  }, 600);
 }
 
 function updateDeepLink(hash) {

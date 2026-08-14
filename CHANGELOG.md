@@ -5,6 +5,57 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.8.1] — 2026-08-14
+
+### Corrigido (Sprint 4.1 — completar deep links de evidência e isolar modo pesquisa)
+
+**Bloqueador 1: Deep link de evidência navegável**:
+- Adicionado handler `#evidencia=` em `handleDeepLinks()` no `app.js`.
+- Implementada função `openEvidenceFromDeepLink(evidenceId)` que localiza a evidência no grafo de proveniência, rola até a seção de pesquisa e abre o modal de evidência.
+- `showEvidenceModal` agora é exportada de `evidence.js` para permitir chamada externa.
+- Agora ao abrir `#evidencia=evidence:soares:2006:pdf-p106-107:costumes-atenuacao-ironia`, o site localiza a evidência, abre o modal e mostra paginação dupla (PDF + impressa).
+
+**Bloqueador 2: Metadados técnicos não vazam em modo Explorar**:
+- Classe `technical-only` adicionada à seção `dossier-technical` no `research-mode.js`.
+- A seção técnica do dossiê agora é ocultada via CSS quando o modo é `explorar` e visível quando é `pesquisar`.
+- Evento `dossier-opened` disparado por `openDossierForCorpusId` em `app.js` quando o modo é `pesquisar`, garantindo que a seção técnica seja adicionada mesmo se o dossiê for aberto depois da mudança de modo.
+- Listener `document.addEventListener('dossier-opened', ...)` em `research-mode.js` chama `addTechnicalInfoToDossier()` quando em modo pesquisar.
+
+**Bloqueador 3: Exportação JSON inclui evidências das operações**:
+- Substituída a coleta de evidências por uma união de IDs usando `Set`:
+  ```js
+  const evidenceIds = new Set([
+    ...(item.evidencias_ids || []),
+    ...ops.flatMap(op => op.evidence_ids || [])
+  ]);
+  ```
+- Agora o JSON exportado do dossiê inclui todas as evidências que sustentam operações tradutórias (ex: "Atenuação da ironia sobre Fieldlove"), não apenas as do corpus item.
+
+**Refinamento 1: Data de consulta na citação**:
+- `CITATION` (constante) substituída por função `buildCitation()` que gera data dinâmica:
+  ```js
+  const consultationDate = new Date().toLocaleDateString('pt-BR');
+  ```
+- Citação agora inclui "em dd/mm/aaaa" no final.
+
+**Refinamento 2: CSV protegido contra injeção de fórmula**:
+- `escapeCSV` agora verifica se o valor começa com `=`, `+`, `-` ou `@` e prefixa com `'` (apóstrofo) para evitar interpretação como fórmula em Excel/LibreOffice.
+
+### Testes E2E novos (5 testes, total 59 E2E)
+
+- `test_research_fixes.py`:
+  - `test_evidence_deep_link_opens_modal`: deep link `#evidencia=` abre modal de evidência
+  - `test_technical_metadata_hidden_in_explorar_mode`: seção técnica oculta em Explorar após abrir em Pesquisar
+  - `test_technical_metadata_visible_in_pesquisar_mode`: seção técnica visível em Pesquisar
+  - `test_citation_includes_consultation_date`: citação inclui data de consulta (formato dd/mm/aaaa)
+  - `test_csv_escape_protects_against_formula`: valores `=`, `+`, `-`, `@` são prefixados com `'`
+
+### Estatísticas
+- **126 testes totais** (67 regressão + 59 E2E), todos passando
+- Deep links agora cobrem 5 tipos: `#texto=`, `#matriz?`, `#trilha=`, `#grafo?`, `#evidencia=`
+- Exportação JSON do dossiê agora é auditável completa (evidências de item + operações)
+- Citação acadêmica inclui data de consulta dinâmica
+
 ## [0.8.0] — 2026-08-14
 
 ### Adicionado (Sprint 4 — Modo Pesquisa + Exportação)
