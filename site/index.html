@@ -11,10 +11,10 @@
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-  <!-- SVG sprite (carregado inline para <use> funcionar em file://) -->
+  <a href="#site-main" class="skip-link">Pular para conteúdo principal</a>
+
   <div id="svg-sprite-container" aria-hidden="true" style="display:none;"></div>
 
-  <!-- Banner de estado (loading/warning/error) -->
   <div id="state-banner" class="state-banner state-banner--loading" role="status" aria-live="polite">
     Carregando dados acadêmicos…
   </div>
@@ -28,13 +28,15 @@
     <nav class="site-nav" aria-label="Navegação principal">
       <a href="#inicio">Início</a>
       <a href="#periodico">O Periódico</a>
-      <a href="#narrativas">Narrativas em Trânsito</a>
-      <a href="#laboratorio">Laboratório de Tradução</a>
-      <a href="#pesquisa">Pesquisa e Evidências</a>
+      <a href="#matriz">Matriz</a>
+      <a href="#trilhas">Trilhas</a>
+      <a href="#narrativas">Narrativas</a>
+      <a href="#laboratorio">Laboratório</a>
+      <a href="#grafo">Grafo</a>
+      <a href="#pesquisa">Pesquisa</a>
     </nav>
 
     <main class="site-main" id="site-main">
-      <!-- Hero -->
       <section id="inicio" class="hero">
         <p class="lead">
           Como uma história publicada em Londres chegava ao Rio de Janeiro —
@@ -62,7 +64,6 @@
         <div id="badge-legend"></div>
       </section>
 
-      <!-- O Periódico — Linha do tempo -->
       <section id="periodico" class="section">
         <h2 class="section-title">O Periódico — Linha do tempo</h2>
         <div id="timeline">
@@ -73,7 +74,26 @@
         </div>
       </section>
 
-      <!-- Narrativas em Trânsito — Lista dos 10 textos -->
+      <section id="matriz" class="section">
+        <h2 class="section-title">Matriz do Corpus</h2>
+        <div id="matrix-container">
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Carregando matriz…</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="trilhas" class="section">
+        <h2 class="section-title">Trilhas Guiadas</h2>
+        <div id="trails-container">
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Carregando trilhas…</p>
+          </div>
+        </div>
+      </section>
+
       <section id="narrativas" class="section">
         <h2 class="section-title">Narrativas em Trânsito — Os dez textos britânicos</h2>
         <p class="section-intro">
@@ -88,7 +108,6 @@
         </div>
       </section>
 
-      <!-- Laboratório de Tradução -->
       <section id="laboratorio" class="section">
         <h2 class="section-title">Laboratório de Tradução</h2>
         <div id="translation-lab">
@@ -99,7 +118,16 @@
         </div>
       </section>
 
-      <!-- Pesquisa e Evidências -->
+      <section id="grafo" class="section">
+        <h2 class="section-title">Grafo Contextual</h2>
+        <div id="contextual-container">
+          <div class="loading-message">
+            <div class="spinner"></div>
+            <p>Carregando grafo…</p>
+          </div>
+        </div>
+      </section>
+
       <section id="pesquisa" class="section">
         <h2 class="section-title">Pesquisa e Evidências</h2>
         <p class="section-intro">
@@ -109,6 +137,12 @@
           <strong>inferido</strong>, <strong>problemático</strong> ou <strong>não identificado</strong>.
         </p>
         <div class="evidence-panel">
+          <h5>Ficha de confiabilidade</h5>
+          <div class="evidence-content" id="confidence-card">
+            <p>Carregando ficha de confiabilidade…</p>
+          </div>
+        </div>
+        <div class="evidence-panel" style="margin-top:1rem;">
           <h5>Como consultar os dados</h5>
           <div class="evidence-content">
             <p>
@@ -129,7 +163,6 @@
       </section>
     </main>
 
-    <!-- Dossiê lateral (overlay + panel) -->
     <div id="dossier-overlay" class="dossier-overlay" aria-hidden="true"></div>
     <aside id="dossier-panel" class="dossier-panel" role="dialog" aria-modal="true" aria-labelledby="dossier-title" aria-hidden="true">
       <div class="dossier-header">
@@ -152,6 +185,12 @@
       </p>
       <div id="footer-meta" class="footer-meta"></div>
     </footer>
+  </div>
+
+  <div id="deep-link-bar" class="deep-link-bar" role="status" aria-live="polite">
+    <span>Link permanente:</span>
+    <code id="deep-link-url"></code>
+    <button class="deep-link-copy" id="deep-link-copy-btn">Copiar</button>
   </div>
 
   <script type="module" src="assets/app.js"></script>
