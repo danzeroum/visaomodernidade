@@ -14,6 +14,35 @@
 import { findOperationsByWork, getEvidenceFor, formatPages, formatPdfPages } from '../data-loader.js';
 import { createBadge } from './badges.js';
 
+let _activeWorkId = null;
+
+/**
+ * Seleciona uma obra específica no laboratório de tradução.
+ * Permite que outros renderers (ex: matrix.js) abram o laboratório
+ * já com o texto correto selecionado.
+ * @param {string} workId — ID da obra (ex: "work:a-cockney-country-gentleman")
+ */
+export function selectTranslationWork(workId) {
+  const t = TEXTOS_LAB.find(t => t.workId === workId);
+  if (!t) {
+    console.warn(`selectTranslationWork: workId não encontrado: ${workId}`);
+    return;
+  }
+  // Atualiza botões
+  const options = document.querySelectorAll('.translation-lab-option');
+  options.forEach((opt, i) => {
+    opt.classList.toggle('translation-lab-option--active', TEXTOS_LAB[i].workId === workId);
+  });
+  // Re-renderiza operações
+  const opsContainer = document.querySelector('.translation-ops');
+  if (opsContainer) {
+    renderOperations(opsContainer, _proveniencia, workId);
+  }
+  _activeWorkId = workId;
+}
+
+let _proveniencia = null;
+
 const TEXTOS_LAB = [
   { corpusId: 'corpus:costumes-ingleses', workId: 'work:a-cockney-country-gentleman', label: 'Costumes Ingleses' },
   { corpusId: 'corpus:honras-hereditarias', workId: 'work:hereditary-honours', label: 'As Honras Hereditárias' },
@@ -27,6 +56,7 @@ const TEXTOS_LAB = [
  * @param {Object} proveniencia
  */
 export function renderTranslationLab(container, proveniencia) {
+  _proveniencia = proveniencia;
   container.innerHTML = '';
 
   const intro = document.createElement('p');

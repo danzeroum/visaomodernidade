@@ -24,9 +24,15 @@ const PERGUNTAS = [
   },
   {
     id: 'franca',
-    label: 'Quais textos passaram pela França?',
-    descricao: 'Textos com versão francesa na Revue Britannique (inferida por exclusão)',
-    filtro: (item) => item.mediacao_francesa.status === 'inferido' || item.mediacao_francesa.status === 'documentado'
+    label: 'Quais textos tiveram versão francesa identificada?',
+    descricao: 'Textos com versão francesa na Revue Britannique (inclui os 7 inferidos por exclusão + Costumes Ingleses que tem versão mas não é fonte direta)',
+    filtro: (item) => item.mediacao_francesa.tem_versao_francesa === true
+  },
+  {
+    id: 'franca-inferida',
+    label: 'Quais rotas via França são apenas inferidas?',
+    descricao: 'Textos cuja versão francesa foi inferida por exclusão (rota não demonstrada caso a caso)',
+    filtro: (item) => item.mediacao_francesa.status === 'inferido'
   },
   {
     id: 'mudou-sentido',

@@ -139,7 +139,9 @@ schema_corpus = {
             "properties": {
                 "status": {"enum": STATUS_ENUM},
                 "descricao": {"type": ["string", "null"]},
-                "metodo": {"type": ["string", "null"], "description": "Método de inferência usado quando status=inferido (ex.: 'inferencia_por_exclusao')."}
+                "metodo": {"type": ["string", "null"], "description": "Método de inferência usado quando status=inferido (ex.: 'inferencia_por_exclusao')."},
+                "tem_versao_francesa": {"type": ["boolean", "null"], "description": "True se a tese registra versão francesa na Revue Britannique (mesmo que não seja fonte direta). False para exceções explícitas."},
+                "rota_para_brasil_demonstrada": {"type": ["boolean", "null"], "description": "True se a tese demonstra caso a caso que a versão francesa foi a rota tradutória até o Brasil. False para todos (a tese não demonstra rota caso a caso)."}
             }
         }
     }
