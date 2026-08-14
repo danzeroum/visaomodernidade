@@ -18,6 +18,7 @@ import { renderTrails } from './renderers/trails.js';
 import { renderContextual } from './renderers/contextual.js';
 import { createBadge, createBadgeLegend } from './renderers/badges.js';
 import { workIdForCorpus } from './data-loader.js';
+import { initResearchMode, updateTechnicalPanel } from './renderers/research-mode.js';
 
 const state = {
   corpus: null,
@@ -154,6 +155,23 @@ function renderAll() {
 
   // Footer meta
   renderFooterMeta();
+
+  // Inicializa modo pesquisa + exportação
+  initResearchMode(state.corpus, state.proveniencia, state.contextual, {
+    getFilteredItems: () => {
+      // Retorna itens atualmente filtrados na matriz
+      const tbody = document.getElementById('matrix-tbody');
+      if (!tbody) return state.corpus.itens;
+      const rows = tbody.querySelectorAll('.matrix-row');
+      const ids = Array.from(rows).map(r => r.dataset.corpusId);
+      return state.corpus.itens.filter(i => ids.includes(i.id));
+    },
+    getCurrentDossierItem: () => {
+      return state.selectedCorpusId
+        ? state.corpus.itens.find(i => i.id === state.selectedCorpusId)
+        : null;
+    }
+  });
 }
 
 function renderHeroStats() {
@@ -239,6 +257,9 @@ function openDossierForCorpusId(corpusId) {
 
   // Deep link
   updateDeepLink(`#texto=${corpusId.replace('corpus:', '')}`);
+
+  // Atualiza painel técnico se em modo pesquisar
+  updateTechnicalPanel(corpusId);
 
   // Marca card selecionado
   document.querySelectorAll('.text-card').forEach(c => {

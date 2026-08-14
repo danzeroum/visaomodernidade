@@ -5,6 +5,63 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.8.0] — 2026-08-14
+
+### Adicionado (Sprint 4 — Modo Pesquisa + Exportação)
+
+**Modo Explorar / Modo Pesquisar** (`site/assets/renderers/research-mode.js`):
+- Toggle no header entre "Explorar" (didático, sem metadados técnicos) e "Pesquisar" (denso, com IDs, status, páginas, método de inferência).
+- Persistência da preferência em `localStorage` (sobrevive recarga da página).
+- Modo Pesquisar mostra elementos com classe `.technical-only` (painel técnico, IDs no dossiê).
+- Matriz fica mais densa em modo Pesquisar (`.matrix-table--dense`).
+
+**Exportação CSV da matriz filtrada**:
+- Botão "Exportar resultados em CSV" na seção Matriz.
+- Exporta apenas os textos atualmente filtrados (respeita perguntas narrativas e busca).
+- Colunas: `texto, fasciculo, data, autor, original, status_original, rota, operacoes, tem_versao_francesa, rota_francesa_demonstrada`.
+- Escape correto de vírgulas, aspas e quebras de linha.
+
+**Exportação JSON do dossiê**:
+- Botão "Baixar dossiê em JSON" no dossiê (visível em modo Pesquisar).
+- Exporta: corpus item completo, manifestação brasileira, manifestação original, operações tradutórias, evidências, versão do pacote, fonte primária.
+- Nome do arquivo: `visaomodernidade-dossie-{slug}.json`.
+
+**Copiar citação acadêmica**:
+- Botão "Copiar citação acadêmica" na barra de exportação.
+- Cita: SOARES (2006) + versão do projeto + data de consulta.
+- Feedback visual: "✓ Citação copiada!" por 2 segundos.
+
+**Deep link de evidência**:
+- Função `getEvidenceDeepLink(evidenceId)` gera URL permanente para qualquer evidência.
+- Botão "Copiar link" ao lado de cada evidência no painel técnico.
+
+**Painel de Consulta Técnica**:
+- Disponível apenas no Modo Pesquisar, na seção "Pesquisa e Evidências".
+- Mostra: Corpus ID, Work ID, fascículo(s), autor + status, original + status, fonte declarada + status, rota tradutória + status, mediação francesa (tem_versao_francesa, rota_para_brasil_demonstrada, status, método), operações tradutórias, evidências relacionadas com paginação dupla e botão copiar link.
+- Atualiza automaticamente ao abrir um dossiê.
+
+**Metadados técnicos no dossiê**:
+- Em modo Pesquisar, o dossiê ganha uma seção "Metadados técnicos" com Corpus ID, Work ID, versão do pacote e botões de exportação JSON + copiar citação.
+
+### Testes E2E novos (8 testes, total 54 E2E)
+
+- `test_research_mode.py`:
+  - `test_mode_toggle_exists`: toggle Explorar/Pesquisar presente
+  - `test_default_mode_is_explorar`: modo padrão é Explorar
+  - `test_switch_to_pesquisar_shows_technical_panel`: troca para Pesquisar mostra painel
+  - `test_switch_back_to_explorar_hides_technical`: volta para Explorar esconde técnicos
+  - `test_export_csv_button_exists`: botão CSV na seção matriz
+  - `test_copy_citation_button_exists`: botão citação presente
+  - `test_mode_preference_persists`: preferência salva em localStorage
+  - `test_technical_panel_updates_on_dossier_open`: painel atualiza ao abrir dossiê
+
+### Estatísticas
+- **121 testes totais** (67 regressão + 54 E2E), todos passando
+- 2 modos de interface (Explorar / Pesquisar)
+- 3 tipos de exportação (CSV matriz, JSON dossiê, citação)
+- 1 painel de consulta técnica com IDs e paginação dupla
+- Deep links de evidência com copiar link
+
 ## [0.7.2] — 2026-08-14
 
 ### Corrigido (Sprint 3.2 — refinamentos de rótulos e acessibilidade)
