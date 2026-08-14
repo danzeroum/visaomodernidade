@@ -110,8 +110,8 @@ export function renderTrails(container, callbacks) {
       b.classList.toggle('trail-option--active', b.dataset.id === trailId);
     });
 
-    // Atualiza URL
-    history.replaceState(null, '', `#trilha=${trailId}`);
+    // Atualiza URL — pushState porque é ação explícita do usuário (clique em trilha)
+    history.pushState(null, '', `#trilha=${trailId}`);
 
     renderTrailContent();
   }

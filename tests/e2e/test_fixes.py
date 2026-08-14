@@ -10,22 +10,22 @@ from __future__ import annotations
 
 
 def test_filter_franca_excludes_exceptions(page):
-    """Filtro 'versão francesa identificada' deve excluir Testamento e Honras Hereditárias."""
+    """Filtro 'associados a versões francesas' deve excluir Testamento e Honras Hereditárias."""
     page.evaluate("document.querySelector('#matriz').scrollIntoView()")
     page.wait_for_timeout(500)
     btns = page.query_selector_all('.pergunta-btn')
     franca_btn = None
     for b in btns:
-        if 'versão francesa identificada' in b.text_content():
+        if 'associados a versões francesas' in b.text_content():
             franca_btn = b
             break
-    assert franca_btn is not None, "Botão 'versão francesa identificada' não encontrado"
+    assert franca_btn is not None, "Botão 'associados a versões francesas' não encontrado"
     franca_btn.click()
     page.wait_for_timeout(500)
     rows = page.query_selector_all('.matrix-row')
     # 8 textos: 7 inferidos + Costumes Ingleses (tem versão mas não é fonte direta)
     # Exclui: O Testamento e As Honras Hereditárias (exceções explícitas)
-    assert len(rows) == 8, f"Esperado 8 textos com versão francesa, encontrado {len(rows)}"
+    assert len(rows) == 8, f"Esperado 8 textos associados a versões francesas, encontrado {len(rows)}"
 
     # Verifica que Testamento e Honras NÃO estão na lista
     texts = []
@@ -37,17 +37,34 @@ def test_filter_franca_excludes_exceptions(page):
     assert not any('Honras' in t for t in texts), "As Honras Hereditárias não deve estar na lista de versão francesa"
 
 
+def test_filter_franca_documentada_returns_one(page):
+    """Filtro 'versão francesa documentalmente localizada' deve retornar apenas Costumes Ingleses."""
+    page.evaluate("document.querySelector('#matriz').scrollIntoView()")
+    page.wait_for_timeout(500)
+    btns = page.query_selector_all('.pergunta-btn')
+    doc_btn = None
+    for b in btns:
+        if 'documentalmente localizada' in b.text_content():
+            doc_btn = b
+            break
+    assert doc_btn is not None, "Botão 'documentalmente localizada' não encontrado"
+    doc_btn.click()
+    page.wait_for_timeout(500)
+    rows = page.query_selector_all('.matrix-row')
+    assert len(rows) == 1, f"Esperado 1 texto com versão documentada, encontrado {len(rows)}"
+
+
 def test_filter_franca_inferida_returns_seven(page):
-    """Filtro 'rotas via França apenas inferidas' deve retornar 7 textos."""
+    """Filtro 'versão francesa inferida por exclusão' deve retornar 7 textos."""
     page.evaluate("document.querySelector('#matriz').scrollIntoView()")
     page.wait_for_timeout(500)
     btns = page.query_selector_all('.pergunta-btn')
     inferida_btn = None
     for b in btns:
-        if 'inferidas' in b.text_content():
+        if 'inferida por exclusão' in b.text_content():
             inferida_btn = b
             break
-    assert inferida_btn is not None, "Botão 'inferidas' não encontrado"
+    assert inferida_btn is not None, "Botão 'inferida por exclusão' não encontrado"
     inferida_btn.click()
     page.wait_for_timeout(500)
     rows = page.query_selector_all('.matrix-row')
@@ -121,16 +138,79 @@ def test_contextual_modal_has_aria(page):
 
 
 def test_contextual_modal_focus_trap(page):
-    """Modal deve ter botão fechar focado e trap de foco."""
+    """Modal deve ter botão fechar focado e trap de foco (Tab cicla dentro do modal)."""
     page.evaluate("document.querySelector('#grafo').scrollIntoView()")
     page.wait_for_timeout(500)
     nodes = page.query_selector_all('.layer-node')
-    if nodes:
-        nodes[0].click()
-        page.wait_for_timeout(500)
-        # Verifica que o botão fechar tem foco
-        close_btn = page.query_selector('#node-details-close')
-        assert close_btn is not None, "Botão fechar não encontrado"
-        # Fecha
-        page.keyboard.press('Escape')
-        page.wait_for_timeout(300)
+    # Encontra o primeiro nó clicável (com data-node-id)
+    trigger_node = None
+    for n in nodes:
+        node_id = n.get_attribute('data-node-id')
+        if node_id:
+            trigger_node = n
+            break
+    if trigger_node is None:
+        pytest.skip("Nenhum nó clicável encontrado no grafo")
+
+    # Usa evaluate para clicar (evita interceptação pelo overlay)
+    node_id = trigger_node.get_attribute('data-node-id')
+    page.evaluate(f"document.querySelector('[data-node-id=\"{node_id}\"]').click()")
+    page.wait_for_timeout(500)
+
+    # Verifica que o botão fechar recebeu foco
+    active_id = page.evaluate("() => document.activeElement?.id")
+    assert active_id == 'node-details-close', (
+        f"Botão fechar deveria ter foco; activeElement.id = {active_id}"
+    )
+
+    # Pressiona Tab — como o modal tem apenas 1 elemento focalizável (botão fechar),
+    # o Tab deve permanecer nesse botão (trap de foco)
+    page.keyboard.press('Tab')
+    page.wait_for_timeout(100)
+    active_id = page.evaluate("() => document.activeElement?.id")
+    assert active_id == 'node-details-close', (
+        f"Tab deveria permanecer no botão fechar (trap); activeElement.id = {active_id}"
+    )
+
+    # Shift+Tab também deve permanecer no botão
+    page.keyboard.press('Shift+Tab')
+    page.wait_for_timeout(100)
+    active_id = page.evaluate("() => document.activeElement?.id")
+    assert active_id == 'node-details-close', (
+        f"Shift+Tab deveria permanecer no botão fechar (trap); activeElement.id = {active_id}"
+    )
+
+    # Fecha com Escape
+    page.keyboard.press('Escape')
+    page.wait_for_timeout(300)
+
+
+def test_contextual_modal_focus_return(page):
+    """Após fechar o modal com Escape, o foco deve voltar ao nó que abriu o modal."""
+    page.evaluate("document.querySelector('#grafo').scrollIntoView()")
+    page.wait_for_timeout(500)
+    nodes = page.query_selector_all('.layer-node')
+    trigger_node = None
+    original_node_id = None
+    for n in nodes:
+        node_id = n.get_attribute('data-node-id')
+        if node_id:
+            trigger_node = n
+            original_node_id = node_id
+            break
+    if trigger_node is None:
+        pytest.skip("Nenhum nó clicável encontrado no grafo")
+
+    # Usa evaluate para clicar (evita interceptação pelo overlay)
+    page.evaluate(f"document.querySelector('[data-node-id=\"{original_node_id}\"]').click()")
+    page.wait_for_timeout(500)
+
+    # Fecha com Escape
+    page.keyboard.press('Escape')
+    page.wait_for_timeout(300)
+
+    # Verifica que o foco voltou ao nó que abriu o modal
+    active_node_id = page.evaluate("() => document.activeElement?.dataset?.nodeId")
+    assert active_node_id == original_node_id, (
+        f"Foco deveria voltar ao nó {original_node_id}; voltou para {active_node_id}"
+    )

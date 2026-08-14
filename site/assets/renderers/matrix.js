@@ -24,14 +24,20 @@ const PERGUNTAS = [
   },
   {
     id: 'franca',
-    label: 'Quais textos tiveram versão francesa identificada?',
-    descricao: 'Textos com versão francesa na Revue Britannique (inclui os 7 inferidos por exclusão + Costumes Ingleses que tem versão mas não é fonte direta)',
+    label: 'Quais textos são associados a versões francesas?',
+    descricao: '1 caso com versão localizada (Costumes Ingleses); 7 casos inferidos por exclusão; exclui as 2 exceções explicitamente nomeadas (O Testamento, As Honras Hereditárias)',
     filtro: (item) => item.mediacao_francesa.tem_versao_francesa === true
   },
   {
+    id: 'franca-documentada',
+    label: 'Versão francesa documentalmente localizada',
+    descricao: 'Apenas textos cuja versão francesa foi individualmente identificada na tese (não inferida por exclusão)',
+    filtro: (item) => item.mediacao_francesa.tem_versao_francesa === true && item.mediacao_francesa.status === 'documentado'
+  },
+  {
     id: 'franca-inferida',
-    label: 'Quais rotas via França são apenas inferidas?',
-    descricao: 'Textos cuja versão francesa foi inferida por exclusão (rota não demonstrada caso a caso)',
+    label: 'Versão francesa inferida por exclusão',
+    descricao: 'Textos cuja versão francesa foi inferida por exclusão (a tese nomeia 3 exceções entre 10 textos; os 7 restantes têm versão por eliminação)',
     filtro: (item) => item.mediacao_francesa.status === 'inferido'
   },
   {
@@ -266,15 +272,27 @@ export function renderMatrix(container, corpus, proveniencia, callbacks) {
   counter.id = 'matrix-counter';
   container.appendChild(counter);
 
-  // Listener de busca
+  // Nota explicativa (visível quando filtro França ativo)
+  const note = document.createElement('div');
+  note.className = 'matrix-note';
+  note.id = 'matrix-note';
+  note.style.cssText = 'margin-top:0.5rem;padding:0.75rem;background:var(--paper-dark);border-left:3px solid var(--gold);border-radius:4px;font-size:0.85rem;color:var(--sepia-dark);display:none;';
+  container.appendChild(note);
+
+  // Listener de busca — usa replaceState com debounce (não polui histórico)
   const input = document.getElementById('matrix-search-input');
+  let _searchDebounce = null;
   input.addEventListener('input', (e) => {
     _currentQuery = e.target.value;
     if (_currentQuery) {
       _activePergunta = null;
       updatePerguntaButtons('todas');
     }
-    updateURL();
+    // Debounce: atualiza URL após 500ms sem digitar
+    if (_searchDebounce) clearTimeout(_searchDebounce);
+    _searchDebounce = setTimeout(() => {
+      updateURL(false); // false = replaceState (não cria entrada de histórico)
+    }, 500);
     renderTable();
   });
 
@@ -336,6 +354,23 @@ export function renderMatrix(container, corpus, proveniencia, callbacks) {
       counter.innerHTML = `<strong>${items.length}</strong> de ${corpus.itens.length} textos exibidos.`;
     }
 
+    // Nota explicativa para filtros de França
+    const note = document.getElementById('matrix-note');
+    if (note) {
+      if (_activePergunta === 'franca') {
+        note.style.display = 'block';
+        note.innerHTML = `<strong>Decomposição metodológica:</strong> 1 caso com versão localizada (Costumes Ingleses — mas a tese afirma que <em>não foi a fonte direta</em>); 7 casos inferidos por exclusão; 2 exceções explicitamente nomeadas pela tese (O Testamento, As Honras Hereditárias) não aparecem nesta lista.`;
+      } else if (_activePergunta === 'franca-documentada') {
+        note.style.display = 'block';
+        note.innerHTML = `<strong>Nota:</strong> Apenas Costumes Ingleses tem versão francesa individualmente localizada na tese (<em>Le Cockney Campagnard</em>, Revue Britannique, fev/1838). A tese afirma expressamente que esta versão <em>não foi a fonte direta</em> da versão brasileira.`;
+      } else if (_activePergunta === 'franca-inferida') {
+        note.style.display = 'block';
+        note.innerHTML = `<strong>Nota:</strong> A versão francesa destes 7 textos foi <em>inferida por exclusão</em>: a tese nomeia 3 exceções entre 10 textos (Costumes Ingleses, O Testamento, As Honras Hereditárias), logo os 7 restantes têm versão por eliminação. A tese não localiza nominalmente cada versão nem demonstra rota tradutória caso a caso.`;
+      } else {
+        note.style.display = 'none';
+      }
+    }
+
     // Notifica timeline para destacar fascículos filtrados
     const fasciculosAtivos = items.flatMap(i => i.fasciculos.map(f => f.numero));
     _onFocusFasciculo(fasciculosAtivos);
@@ -347,7 +382,7 @@ export function renderMatrix(container, corpus, proveniencia, callbacks) {
     });
   }
 
-  function updateURL() {
+  function updateURL(usePushState = true) {
     const params = new URLSearchParams();
     if (_activePergunta) {
       params.set('pergunta', _activePergunta);
@@ -359,7 +394,11 @@ export function renderMatrix(container, corpus, proveniencia, callbacks) {
       ? `#matriz?${params.toString()}`
       : '#matriz';
     if (window.location.hash !== newHash) {
-      history.replaceState(null, '', newHash);
+      if (usePushState) {
+        history.pushState(null, '', newHash);
+      } else {
+        history.replaceState(null, '', newHash);
+      }
     }
   }
 
