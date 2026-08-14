@@ -12,11 +12,12 @@
 import { loadAll, ESTADO } from './data-loader.js';
 import { renderTimeline } from './renderers/timeline.js';
 import { openDossier, closeDossier } from './renderers/dossier.js';
-import { renderTranslationLab } from './renderers/translation-lab.js';
+import { renderTranslationLab, selectTranslationWork } from './renderers/translation-lab.js';
 import { renderMatrix } from './renderers/matrix.js';
 import { renderTrails } from './renderers/trails.js';
 import { renderContextual } from './renderers/contextual.js';
 import { createBadge, createBadgeLegend } from './renderers/badges.js';
+import { workIdForCorpus } from './data-loader.js';
 
 const state = {
   corpus: null,
@@ -118,10 +119,9 @@ function renderAll() {
       onOpenLab: (corpusId) => {
         const workId = workIdForCorpus(corpusId);
         if (workId) {
-          // Scroll to lab and trigger the right option
           document.getElementById('laboratorio').scrollIntoView({ behavior: 'smooth' });
-          // The lab has its own selector; we'd need to expose a setter
-          // For now, just scroll
+          // Aguarda scroll e seleciona o texto no laboratório
+          setTimeout(() => selectTranslationWork(workId), 400);
         }
       }
     });
@@ -375,7 +375,8 @@ function handleDeepLinks() {
 
 function updateDeepLink(hash) {
   if (window.location.hash !== hash) {
-    history.replaceState(null, '', hash);
+    // Usa pushState para criar entrada no histórico (permite Voltar/Avançar)
+    history.pushState(null, '', hash);
   }
   // Show deep link bar
   const bar = document.getElementById('deep-link-bar');
@@ -386,6 +387,25 @@ function updateDeepLink(hash) {
     bar.classList.add('deep-link-bar--visible');
   }
 }
+
+// Escuta mudanças no histórico (Voltar/Avançar do navegador)
+window.addEventListener('popstate', () => {
+  handleDeepLinks();
+  // Esconde barra de deep link se voltou para estado inicial
+  if (!window.location.hash) {
+    document.getElementById('deep-link-bar')?.classList.remove('deep-link-bar--visible');
+    // Fecha dossiê se estava aberto
+    const overlay = document.getElementById('dossier-overlay');
+    const panel = document.getElementById('dossier-panel');
+    if (overlay && overlay.classList.contains('dossier-overlay--open')) {
+      closeDossier(overlay, panel);
+    }
+  }
+});
+
+window.addEventListener('hashchange', () => {
+  handleDeepLinks();
+});
 
 // ---------- Load SVG sprite ----------
 async function loadSvgSprite() {

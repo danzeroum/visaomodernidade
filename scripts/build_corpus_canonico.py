@@ -81,7 +81,9 @@ corpus = {
             },
             "mediacao_francesa": {
                 "status": "documentado",
-                "descricao": "Há versão francesa na Revue Britannique, 'Le Cockney Campagnard', publicada em fevereiro de 1838. A tese afirma expressamente que a versão brasileira NÃO é tradução desta versão francesa. A mediação francesa, portanto, não é rota confirmada — é candidata descartada pela tese para este texto específico."
+                "descricao": "Há versão francesa na Revue Britannique, 'Le Cockney Campagnard', publicada em fevereiro de 1838. A tese afirma expressamente que a versão brasileira NÃO é tradução desta versão francesa. A mediação francesa, portanto, não é rota confirmada — é candidata descartada pela tese para este texto específico.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [
                 "op:costumes:atenuacao-ironia-fieldlove",
@@ -130,7 +132,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese afirma (p. impressa 135-136 / PDF 143-144) que sete dos dez textos britânicos tiveram versões francesas na Revue Britannique, e nomeia explicitamente as três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). 'Uma Noite no Mar' não figura entre as exceções — logo, por exclusão, teve versão francesa. Contudo, a tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese afirma (p. impressa 135-136 / PDF 143-144) que sete dos dez textos britânicos tiveram versões francesas na Revue Britannique, e nomeia explicitamente as três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). 'Uma Noite no Mar' não figura entre as exceções — logo, por exclusão, teve versão francesa. Contudo, a tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [],
             "evidencias_ids": [
@@ -172,7 +176,9 @@ corpus = {
             },
             "mediacao_francesa": {
                 "status": "documentado",
-                "descricao": "A tese enumera explicitamente 'O Testamento' entre as três exceções (junto com As Honras Hereditárias e Costumes Ingleses) que NÃO tiveram versão francesa na Revue Britannique. Portanto, não há mediação francesa para este texto."
+                "descricao": "A tese enumera explicitamente 'O Testamento' entre as três exceções (junto com As Honras Hereditárias e Costumes Ingleses) que NÃO tiveram versão francesa na Revue Britannique. Portanto, não há mediação francesa para este texto.",
+                "tem_versao_francesa": False,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [],
             "evidencias_ids": [
@@ -216,7 +222,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). 'O Livro da Vida' não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). 'O Livro da Vida' não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [],
             "evidencias_ids": [
@@ -261,7 +269,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [],
             "evidencias_ids": [
@@ -306,7 +316,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [],
             "evidencias_ids": [
@@ -350,7 +362,9 @@ corpus = {
             },
             "mediacao_francesa": {
                 "status": "documentado",
-                "descricao": "A tese enumera 'As Honras Hereditárias' explicitamente entre as três exceções (com O Testamento e Costumes Ingleses) que NÃO tiveram versão francesa na Revue Britannique."
+                "descricao": "A tese enumera 'As Honras Hereditárias' explicitamente entre as três exceções (com O Testamento e Costumes Ingleses) que NÃO tiveram versão francesa na Revue Britannique.",
+                "tem_versao_francesa": False,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [
                 "op:honras:supressao-gesto-caracterizador",
@@ -398,7 +412,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [],
             "evidencias_ids": [
@@ -443,7 +459,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [
                 "op:alibi:supressao-critica-irlandeses"
@@ -509,7 +527,9 @@ corpus = {
             "mediacao_francesa": {
                 "status": "inferido",
                 "metodo": "inferencia_por_exclusao",
-                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil."
+                "descricao": "A tese nomeia explicitamente três exceções (O Testamento, As Honras Hereditárias, Costumes Ingleses). Este texto não figura entre elas — logo, por exclusão, teve versão francesa na Revue Britannique. A tese não localiza nominalmente a versão francesa deste texto nem demonstra que ela foi a rota tradutória até o Brasil.",
+                "tem_versao_francesa": True,
+                "rota_para_brasil_demonstrada": False,
             },
             "operacoes_tradutorias_ids": [
                 "op:esbocos:supressao-nota-punicao-moral"

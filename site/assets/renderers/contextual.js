@@ -228,18 +228,47 @@ export function renderContextual(container, corpus, contextual, proveniencia, ca
       }));
     }
 
-    // Camada 6: Contexto editorial (profundidade >= 3)
+    // Camada 6: Contexto editorial (profundidade >= 3) — derivado do grafo contextual JSON
     if (_profundidade >= 3) {
       diagram.appendChild(createArrow('CONTEXTO_EDITORIAL', 'documentado'));
 
+      // Consulta nós reais do grafo contextual
       const ctxNodes = [
-        { type: 'periodical', title: 'Tipografia Commercial', subtitle: 'Josino do Nascimento Silva', status: 'documentado' },
-        { type: 'periodical', title: 'Livraria H. & E. Laemmert', subtitle: 'Heinrich & Eduard Laemmert', status: 'documentado' },
-        { type: 'periodical', title: 'O Chronista', subtitle: 'Periódico irmão (1836-1839)', status: 'documentado' },
-        { type: 'periodical', title: 'Revue Britannique', subtitle: 'Intermediária documentada (7 textos)', status: 'documentado' }
+        { id: 'tipografia:commercial', label: 'Tipografia Commercial' },
+        { id: 'livraria:h-e-laemmert', label: 'Livraria H. & E. Laemmert' },
+        { id: 'periodico:o-chronista', label: 'O Chronista' },
+        { id: 'periodico:revue-britannique', label: 'Revue Britannique' }
       ];
-      for (const n of ctxNodes) {
-        diagram.appendChild(createLayerNode(n));
+
+      for (const ctxRef of ctxNodes) {
+        const node = findNode(contextual, ctxRef.id);
+        if (node) {
+          // Deriva subtítulo dos atributos do nó
+          let subtitle = '';
+          if (node.atributos) {
+            if (node.atributos.proprietario) subtitle = node.atributos.proprietario;
+            else if (node.atributos.proprietarios) subtitle = node.atributos.proprietarios.join(', ');
+            else if (node.atributos.periodo_inicio) subtitle = `${node.atributos.periodo_inicio}–${node.atributos.periodo_fim || ''}`;
+            else if (node.atributos.local) subtitle = node.atributos.local;
+            else if (node.atributos.papel) subtitle = node.atributos.papel;
+          }
+          diagram.appendChild(createLayerNode({
+            type: 'periodical',
+            title: node.titulo,
+            subtitle: subtitle,
+            status: node.status_epistemologico,
+            node: node
+          }));
+        } else {
+          // Fallback: se o nó não existir no grafo, mostra como lacuna
+          console.warn(`Nó contextual não encontrado no JSON: ${ctxRef.id}`);
+          diagram.appendChild(createLayerNode({
+            type: 'periodical',
+            title: ctxRef.label,
+            subtitle: 'Nó não encontrado no grafo contextual',
+            status: 'nao_identificado'
+          }));
+        }
       }
     }
 
@@ -328,8 +357,14 @@ function showNodeDetails(node) {
   const existing = document.getElementById('node-details-modal');
   if (existing) existing.remove();
 
+  // Guarda o elemento que abriu o modal para retornar o foco depois
+  const triggerEl = document.activeElement;
+
   const overlay = document.createElement('div');
   overlay.id = 'node-details-modal';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.setAttribute('aria-labelledby', 'node-details-title');
   overlay.style.cssText = `
     position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;
     display:flex;align-items:center;justify-content:center;padding:1rem;
@@ -342,22 +377,25 @@ function showNodeDetails(node) {
   `;
 
   const closeBtn = document.createElement('button');
+  closeBtn.id = 'node-details-close';
+  closeBtn.setAttribute('aria-label', 'Fechar modal de detalhes do nó');
   closeBtn.style.cssText = `
     float:right;background:var(--sepia-dark);color:var(--paper);border:none;
     border-radius:50%;width:28px;height:28px;font-size:1rem;cursor:pointer;
   `;
   closeBtn.textContent = '✕';
-  closeBtn.addEventListener('click', () => overlay.remove());
-  modal.appendChild(closeBtn);
 
   const title = document.createElement('h4');
+  title.id = 'node-details-title';
   title.textContent = node.titulo;
   title.style.cssText = 'margin:0 0 0.5rem;color:var(--green-dark);';
-  modal.appendChild(title);
 
   const idDiv = document.createElement('div');
   idDiv.style.cssText = 'font-family:var(--font-mono);font-size:0.8rem;color:var(--sepia);margin-bottom:0.5rem;';
   idDiv.textContent = `ID: ${node.id}`;
+
+  modal.appendChild(closeBtn);
+  modal.appendChild(title);
   modal.appendChild(idDiv);
 
   if (node.atributos) {
@@ -375,15 +413,49 @@ function showNodeDetails(node) {
   }
 
   overlay.appendChild(modal);
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.remove();
-  });
-  document.addEventListener('keydown', function esc(e) {
-    if (e.key === 'Escape') {
-      overlay.remove();
-      document.removeEventListener('keydown', esc);
+
+  // Função para fechar e retornar foco
+  const closeModal = () => {
+    overlay.remove();
+    if (triggerEl && typeof triggerEl.focus === 'function') {
+      triggerEl.focus();
     }
+    document.removeEventListener('keydown', onKeyDown);
+  };
+
+  // Fechamento: clique fora
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
   });
 
+  // Fechamento: botão
+  closeBtn.addEventListener('click', closeModal);
+
+  // Fechamento: Escape
+  const onKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal();
+    }
+    // Trap de foco simples: se Tab no último elemento, volta para o primeiro
+    if (e.key === 'Tab') {
+      const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
+  document.addEventListener('keydown', onKeyDown);
+
   document.body.appendChild(overlay);
+
+  // Foco automático no botão fechar
+  setTimeout(() => closeBtn.focus(), 50);
 }

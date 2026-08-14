@@ -5,6 +5,55 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.7.1] — 2026-08-14
+
+### Corrigido (Sprint 3.1 — refinamentos metodológicos e de UX)
+
+**Correção crítica: filtro "passaram pela França"**:
+- Adicionados campos `tem_versao_francesa` e `rota_para_brasil_demonstrada` ao `mediacao_francesa` em cada item do corpus canônico.
+- `tem_versao_francesa`: `True` para os 7 textos inferidos por exclusão + Costumes Ingleses (tem versão mas não é fonte direta); `False` para O Testamento e As Honras Hereditárias (exceções explícitas).
+- `rota_para_brasil_demonstrada`: `False` para todos (a tese não demonstra rota caso a caso).
+- Filtro renomeado: "Quais textos tiveram versão francesa identificada?" (usa `tem_versao_francesa === true`).
+- Novo filtro: "Quais rotas via França são apenas inferidas?" (usa `status === 'inferido'`).
+- Schema `statusComDescricao` atualizado para permitir os novos campos.
+
+**Correção crítica: grafo contextual deriva nós do JSON**:
+- Removidos nós editoriais hardcoded (`Tipografia Commercial`, `Livraria H. & E. Laemmert`, `O Chronista`, `Revue Britannique`) de `contextual.js`.
+- Agora consulta `findNode(contextual, 'tipografia:commercial')` etc. no `grafo_contextual_v2.json`.
+- Subtítulos derivados dos atributos do nó (proprietário, periodo, local, papel).
+- Fallback gracioso: se o nó não existir no JSON, mostra como lacuna com status `nao_identificado` e aviso no console.
+
+**Ajuste funcional: coluna Alterações → laboratório**:
+- Criada função `selectTranslationWork(workId)` exportada de `translation-lab.js`.
+- `app.js` agora chama `selectTranslationWork(workId)` após scroll, selecionando automaticamente o texto correto no laboratório.
+- Comportamento: clicar em "3 operações" na matriz → abre laboratório → seleciona Costumes Ingleses → mostra as 3 operações correspondentes.
+
+**Acessibilidade: modal de nó contextual**:
+- Adicionados `role="dialog"`, `aria-modal="true"`, `aria-labelledby="node-details-title"`.
+- Foco automático no botão fechar ao abrir.
+- Trap de foco: Tab no último elemento volta para o primeiro; Shift+Tab no primeiro vai para o último.
+- Retorno de foco: ao fechar, o foco volta para o elemento que abriu o modal.
+- Fechamento por Escape, clique fora e botão fechar.
+
+**Deep links e histórico do navegador**:
+- Trocado `history.replaceState()` por `history.pushState()` para criar entradas reais no histórico.
+- Adicionados listeners `popstate` e `hashchange` para responder ao botão Voltar/Avançar do navegador.
+- Comportamento: matriz filtrada → dossiê aberto → botão Voltar → retorna à matriz com filtro preservado.
+
+### Testes E2E novos (5 testes, total 44 E2E)
+
+- `test_fixes.py`:
+  - `test_filter_franca_excludes_exceptions`: filtro "versão francesa identificada" exclui Testamento e Honras (8 textos)
+  - `test_filter_franca_inferida_returns_seven`: filtro "rotas inferidas" retorna 7 textos
+  - `test_alteracoes_column_selects_text_in_lab`: coluna Alterações seleciona texto correto no laboratório
+  - `test_contextual_modal_has_aria`: modal tem `role=dialog`, `aria-modal`, `aria-labelledby`, fecha com Escape
+  - `test_contextual_modal_focus_trap`: modal tem botão fechar focado
+
+### Estatísticas
+- **111 testes totais** (67 regressão + 44 E2E), todos passando
+- Schema do corpus atualizado com `tem_versao_francesa` e `rota_para_brasil_demonstrada`
+- Grafo contextual 100% derivado do JSON (zero nós hardcoded)
+
 ## [0.7.0] — 2026-08-14
 
 ### Adicionado (Sprint 3 — matriz, trilhas, grafo contextual, deep links)
