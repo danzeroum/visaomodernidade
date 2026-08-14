@@ -5,6 +5,64 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.7.0] — 2026-08-14
+
+### Adicionado (Sprint 3 — matriz, trilhas, grafo contextual, deep links)
+
+**P1.1 — Matriz filtrável com busca por sintaxe** (`site/assets/renderers/matrix.js`):
+- Tabela dos 10 textos com colunas: Texto, Fascículo, Original, Rota, Alterações, Certeza
+- **7 perguntas narrativas** (filtros prontos): "O que ainda não sabemos?", "Quais textos passaram pela França?", "Onde a tradução mudou o sentido?", "Quais narrativas criticam a sociedade?", "Quais textos não têm original identificado?", "Quais textos têm fonte problemática?", "Quais textos foram serializados?"
+- **Busca com sintaxe**: `status:problematico`, `autor:bulwer`, `fasciculo:30`, `fonte:revue`, `operacao:ironia`
+- Colunas clicáveis: Texto→dossiê, Fascículo→timeline, Alterações→laboratório
+- Navegação por teclado (j/k/Enter)
+- Estado refletido na URL (`#matriz?pergunta=...&q=...`)
+
+**P1.3 — Trilhas guiadas** (`site/assets/renderers/trails.js`):
+- **3 trilhas**: "Uma história em viagem" (5 passos), "O que a tradução apaga?" (4 passos), "O que ainda não sabemos?" (4 passos)
+- Cada passo abre o dossiê correspondente
+- Navegação: passo anterior/próximo, abrir dossiê
+- Estado na URL (`#trilha=traducao-apaga`)
+
+**P2.1 — Grafo contextual em camadas** (`site/assets/renderers/contextual.js`):
+- Rede vertical em camadas: Pessoa → Obra → Veículo britânico → Mediação → Gabinete → Fascículo
+- **3 níveis de profundidade**: 1 (básico), 2 (com mediações), 3 (com contexto editorial)
+- Foco em uma entidade por vez (10 opções)
+- Semântica visual: linha contínua (documentado), tracejada (inferido), interrompida (lacuna), âmbar (problemático)
+- Ícones: 👤 pessoa, 📖 obra, 📰 periódico
+- Modal de detalhes do nó ao clicar
+- Estado na URL (`#grafo?foco=alibi&profundidade=2`)
+
+**P1.2 — Deep links**:
+- `#texto=costumes-ingleses` → abre dossiê automaticamente
+- `#matriz?pergunta=...&q=...` → estado da matriz
+- `#trilha=traducao-apaga` → trilha ativa
+- `#grafo?foco=alibi&profundidade=2` → grafo focado
+- Barra de "link permanente" no rodapé com botão copiar
+
+**Ficha de confiabilidade global**:
+- Disponível na seção "Pesquisa e Evidências"
+- Mostra: dados verificados, inferências, lacunas, fontes problemáticas, última validação, versão dos dados
+
+**Acessibilidade**:
+- Skip link "Pular para conteúdo principal"
+- Foco visível em todos os elementos interativos
+- `prefers-reduced-motion` respeitado
+- Navegação por teclado na matriz (j/k/Enter)
+
+### Testes E2E novos (15 testes adicionais, total 39 E2E)
+
+- `test_matrix.py` (6 testes): 10 linhas padrão, perguntas narrativas, filtro "não sabemos", busca `autor:bulwer`, busca `status:problematico`, clique abre dossiê
+- `test_trails.py` (4 testes): 3 trilhas, passos renderizados, título/subtítulo, clique abre dossiê
+- `test_contextual.py` (5 testes): seletor de foco (10 opções), nós em camadas, legenda, troca de foco, troca de profundidade
+
+### Estatísticas
+- **106 testes totais** (67 regressão + 39 E2E), todos passando
+- **8 seções** no site (Início, Periódico, Matriz, Trilhas, Narrativas, Laboratório, Grafo, Pesquisa)
+- **7 perguntas narrativas** + busca com 5 operadores de sintaxe
+- **3 trilhas guiadas** com 13 passos totais
+- **10 opções de foco** no grafo contextual × 3 níveis de profundidade
+- **4 tipos de deep link** com estado persistente na URL
+
 ## [0.6.3] — 2026-08-14
 
 ### Corrigido (sincronização README com MVP da exposição digital)

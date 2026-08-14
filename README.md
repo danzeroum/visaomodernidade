@@ -1,4 +1,4 @@
-# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.3)
+# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.7.0)
 
 [![Academic data validation](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
 [![Deploy to Pages](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml)
@@ -236,7 +236,7 @@ Job único que:
 
 | Versão | Data | Descrição |
 |--------|------|-----------|
-| **v0.6.3** | **2026-08-14** | **Sincronização README:** corrigida árvore `site/` com renderers; `make site` agora serve `_site/` (não `site/`); correção Crabbe ("não houve publicação com o título indicado"); BibTeX `visaomodernidade_v063`; seção "Exposição digital" com URL pública |
+| **v0.7.0** | **2026-08-14** | **Sprint 3:** matriz filtrável com busca por sintaxe + 7 perguntas narrativas; 3 trilhas guiadas; grafo contextual em camadas; deep links (#texto=, #matriz?, #trilha=, #grafo?); ficha de confiabilidade; 106 testes |
 | v0.6.2 | 2026-08-14 | Hotfix CI #2: testes E2E pulam graciosamente sem Chromium (causa da falha do PR #9); workflow consolidado em job único com Playwright |
 | v0.6.1 | 2026-08-14 | Hotfix CI #1: corrigidos nomes de schemas em `arquivos_validados` (causa da falha do PR #5); porta dinâmica e timeouts maiores nos testes E2E |
 | v0.6.0 | 2026-08-14 | Sprint 2: deploy valida dados antes do Pages (PR1); smoke tests curl no CI (PR2); 24 testes E2E com Playwright (PR2b); 91 testes totais |
@@ -276,8 +276,8 @@ MIT — veja `LICENSE`.
 ## Como citar este pacote
 
 ```bibtex
-@misc{visaomodernidade_v063,
-  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.6.3)},
+@misc{visaomodernidade_v070,
+  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.7.0)},
   author = {Extraído e validado a partir de Soares, Maria Angélica Lau Pereira (2006)},
   year   = {2026},
   note   = {Grafo contextual e grafo de proveniência textual dos dez textos britânicos do Gabinete de Leitura (1837-1838)},
