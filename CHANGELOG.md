@@ -5,6 +5,51 @@ Todos os cambios notáveis neste projeto serão documentados neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere a [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [0.7.2] — 2026-08-14
+
+### Corrigido (Sprint 3.2 — refinamentos de rótulos e acessibilidade)
+
+**Refinamento metodológico: rótulo do filtro França**:
+- Renomeado: "Quais textos tiveram versão francesa identificada?" → "Quais textos são associados a versões francesas?" (formulação mais precisa — evita afirmar identificação individual onde há inferência por exclusão).
+- Adicionado novo filtro: "Versão francesa documentalmente localizada" (retorna apenas Costumes Ingleses — o único caso com versão individualmente identificada na tese).
+- Renomeado: "Quais rotas via França são apenas inferidas?" → "Versão francesa inferida por exclusão" (mais descritivo).
+- Adicionada **nota explicativa visível** abaixo da matriz quando filtros de França estão ativos, mostrando a decomposição metodológica: "1 caso com versão localizada; 7 casos inferidos por exclusão; 2 exceções explicitamente nomeadas".
+
+**Padronização de política pushState/replaceState**:
+- Regra aplicada: ações explícitas do usuário usam `history.pushState()`; inicialização/renderização/sincronização interna usam `history.replaceState()`.
+- `matrix.js`: clique em pergunta narrativa usa `pushState`; digitação em busca usa `replaceState` com debounce de 500ms.
+- `trails.js`: seleção de trilha usa `pushState`.
+- `contextual.js`: mudança de foco/profundidade usa `pushState`.
+- `app.js`: fechamento de dossiê usa `pushState` (permite Voltar reabrir o dossiê).
+- Resultado: botão Voltar/Avançar do navegador agora navega por matriz filtrada → dossiê → grafo focado → Voltar → retorna à matriz com filtro preservado.
+
+**Reforço de testes E2E do modal**:
+- `test_contextual_modal_focus_trap`: agora verifica que `document.activeElement.id === 'node-details-close'` após abrir o modal (foco real, não apenas existência do botão).
+- Adicionado ciclo de Tab: verifica que Tab e Shift+Tab permanecem no botão fechar (trap de foco confirmado).
+- `test_contextual_modal_focus_return` (novo): verifica que após fechar com Escape, `document.activeElement.dataset.nodeId` é igual ao ID do nó que abriu o modal (retorno de foco confirmado).
+- Nós do grafo agora têm `tabindex="0"`, `role="button"` e `aria-label` para serem focalizáveis por teclado.
+
+**Acessibilidade adicional**:
+- Nós do grafo contextual agora são focalizáveis por teclado (Tab) e acionáveis com Enter/Espaço.
+- `showNodeDetails()` aceita parâmetro `triggerEl` explícito para garantir retorno de foco mesmo quando `document.activeElement` não é confiável.
+
+### Testes E2E atualizados (7 testes em `test_fixes.py`, total 46 E2E)
+
+| Teste | Verificação |
+|-------|-------------|
+| `test_filter_franca_excludes_exceptions` | Filtro "associados a versões francesas" exclui Testamento e Honras (8 textos) |
+| `test_filter_franca_documentada_returns_one` | **NOVO** — Filtro "documentalmente localizada" retorna apenas Costumes Ingleses (1 texto) |
+| `test_filter_franca_inferida_returns_seven` | Filtro "inferida por exclusão" retorna 7 textos |
+| `test_alteracoes_column_selects_text_in_lab` | Coluna Alterações seleciona texto correto no laboratório |
+| `test_contextual_modal_has_aria` | Modal tem `role=dialog`, `aria-modal`, `aria-labelledby`, fecha com Escape |
+| `test_contextual_modal_focus_trap` | **REFORÇADO** — Verifica foco real no botão fechar + ciclo Tab/Shift+Tab |
+| `test_contextual_modal_focus_return` | **NOVO** — Verifica retorno de foco ao nó após fechar modal |
+
+### Estatísticas
+- **113 testes totais** (67 regressão + 46 E2E), todos passando
+- 9 perguntas narrativas na matriz (era 8)
+- Política de histórico consistente: `pushState` para ações, `replaceState` para sincronização
+
 ## [0.7.1] — 2026-08-14
 
 ### Corrigido (Sprint 3.1 — refinamentos metodológicos e de UX)

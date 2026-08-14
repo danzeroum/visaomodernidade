@@ -290,7 +290,8 @@ export function renderContextual(container, corpus, contextual, proveniencia, ca
   function updateURL() {
     const newHash = `#grafo?foco=${_foco}&profundidade=${_profundidade}`;
     if (window.location.hash !== newHash) {
-      history.replaceState(null, '', newHash);
+      // pushState: mudança de foco/profundidade é ação explícita do usuário
+      history.pushState(null, '', newHash);
     }
   }
 
@@ -332,9 +333,19 @@ function createLayerNode({ type, title, subtitle, status, note, node }) {
 
   if (node) {
     div.dataset.nodeId = node.id;
+    // Torna o nó focalizável para acessibilidade
+    div.setAttribute('tabindex', '0');
+    div.setAttribute('role', 'button');
+    div.setAttribute('aria-label', `Ver detalhes: ${node.titulo}`);
     div.addEventListener('click', () => {
-      // Mostra detalhes do nó em um modal ou tooltip
-      showNodeDetails(node);
+      // Guarda referência ao elemento clicado para retorno de foco
+      showNodeDetails(node, div);
+    });
+    div.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        showNodeDetails(node, div);
+      }
     });
     div.style.cursor = 'pointer';
   }
@@ -352,13 +363,14 @@ function createArrow(label, status) {
   return arrow;
 }
 
-function showNodeDetails(node) {
+function showNodeDetails(node, triggerEl) {
   // Remove modal existente
   const existing = document.getElementById('node-details-modal');
   if (existing) existing.remove();
 
   // Guarda o elemento que abriu o modal para retornar o foco depois
-  const triggerEl = document.activeElement;
+  // Prioriza o triggerEl passado explicitamente; fallback para activeElement
+  const trigger = triggerEl || document.activeElement;
 
   const overlay = document.createElement('div');
   overlay.id = 'node-details-modal';
@@ -417,8 +429,8 @@ function showNodeDetails(node) {
   // Função para fechar e retornar foco
   const closeModal = () => {
     overlay.remove();
-    if (triggerEl && typeof triggerEl.focus === 'function') {
-      triggerEl.focus();
+    if (trigger && typeof trigger.focus === 'function') {
+      trigger.focus();
     }
     document.removeEventListener('keydown', onKeyDown);
   };

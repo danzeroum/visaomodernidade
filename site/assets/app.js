@@ -394,11 +394,16 @@ window.addEventListener('popstate', () => {
   // Esconde barra de deep link se voltou para estado inicial
   if (!window.location.hash) {
     document.getElementById('deep-link-bar')?.classList.remove('deep-link-bar--visible');
-    // Fecha dossiê se estava aberto
+    // Fecha dossiê se estava aberto — usa pushState para criar entrada de histórico
     const overlay = document.getElementById('dossier-overlay');
     const panel = document.getElementById('dossier-panel');
     if (overlay && overlay.classList.contains('dossier-overlay--open')) {
       closeDossier(overlay, panel);
+    }
+    // Limpa hash com pushState (ação explícita do usuário: Voltar)
+    if (window.location.hash.startsWith('#texto=')) {
+      history.pushState(null, '', window.location.pathname);
+      document.getElementById('deep-link-bar')?.classList.remove('deep-link-bar--visible');
     }
   }
 });
@@ -428,9 +433,9 @@ document.addEventListener('click', (e) => {
     const panel = document.getElementById('dossier-panel');
     closeDossier(overlay, panel);
     document.querySelectorAll('.text-card--selected').forEach(c => c.classList.remove('text-card--selected'));
-    // Limpa deep link do dossiê
+    // Limpa deep link do dossiê — pushState (ação explícita do usuário: fechar)
     if (window.location.hash.startsWith('#texto=')) {
-      history.replaceState(null, '', window.location.pathname);
+      history.pushState(null, '', window.location.pathname);
       document.getElementById('deep-link-bar')?.classList.remove('deep-link-bar--visible');
     }
   }
