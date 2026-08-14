@@ -1,4 +1,4 @@
-# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.8.0)
+# visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.8.1)
 
 [![Academic data validation](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/validate-data.yml)
 [![Deploy to Pages](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/danzeroum/visaomodernidade/actions/workflows/deploy-pages.yml)
@@ -236,7 +236,7 @@ Job único que:
 
 | Versão | Data | Descrição |
 |--------|------|-----------|
-| **v0.8.0** | **2026-08-14** | **Sprint 4:** Modo Explorar/Pesquisar (toggle com persistência); exportação CSV da matriz filtrada; exportação JSON do dossiê; copiar citação acadêmica; painel de consulta técnica com IDs e paginação dupla; deep links de evidência; 121 testes |
+| **v0.8.1** | **2026-08-14** | **Sprint 4:** Modo Explorar/Pesquisar (toggle com persistência); exportação CSV da matriz filtrada; exportação JSON do dossiê; copiar citação acadêmica; painel de consulta técnica com IDs e paginação dupla; deep links de evidência; 126 testes |
 | v0.7.2 | 2026-08-14 | Sprint 3.2: rótulo França refinado; política pushState/replaceState; testes E2E do modal reforçados; 113 testes |
 | v0.7.1 | 2026-08-14 | Sprint 3.1: filtro França corrigido (separa versão francesa de rota); grafo contextual 100% derivado do JSON; coluna Alterações seleciona texto no laboratório; modal com ARIA + trap de foco; histórico Voltar/Avançar |
 | v0.7.0 | 2026-08-14 | Sprint 3: matriz filtrável com busca por sintaxe + 7 perguntas narrativas; 3 trilhas guiadas; grafo contextual em camadas; deep links; ficha de confiabilidade; 106 testes |
@@ -279,8 +279,8 @@ MIT — veja `LICENSE`.
 ## Como citar este pacote
 
 ```bibtex
-@misc{visaomodernidade_v080,
-  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.8.0)},
+@misc{visaomodernidade_v081,
+  title  = {visaomodernidade — Pacote de Dados Acadêmicos Versionados (v0.8.1)},
   author = {Extraído e validado a partir de Soares, Maria Angélica Lau Pereira (2006)},
   year   = {2026},
   note   = {Grafo contextual e grafo de proveniência textual dos dez textos britânicos do Gabinete de Leitura (1837-1838)},

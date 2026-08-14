@@ -12,7 +12,14 @@
  */
 
 const STORAGE_KEY = 'visaomodernidade-mode';
-const CITATION = `SOARES, Maria Angélica Lau Pereira. Visão da Modernidade: A Presença Britânica no Gabinete de Leitura (1837-1838). São Paulo: USP, 2006. Evidência consultada no projeto visaomodernidade, versão 0.8.0.`;
+
+function buildCitation() {
+  const consultationDate = new Date().toLocaleDateString('pt-BR');
+  return `SOARES, Maria Angélica Lau Pereira. Visão da Modernidade: `
+    + `A Presença Britânica no Gabinete de Leitura (1837-1838). `
+    + `São Paulo: USP, 2006. Evidência consultada no projeto `
+    + `visaomodernidade, versão 0.8.0, em ${consultationDate}.`;
+}
 
 let _currentMode = 'explorar'; // 'explorar' | 'pesquisar'
 let _corpus = null;
@@ -45,6 +52,13 @@ export function initResearchMode(corpus, proveniencia, contextual, callbacks) {
 
   // Cria painel de consulta técnica
   createTechnicalPanel();
+
+  // Listener para evento de dossiê aberto (adiciona metadados técnicos se em modo pesquisar)
+  document.addEventListener('dossier-opened', () => {
+    if (_currentMode === 'pesquisar') {
+      addTechnicalInfoToDossier();
+    }
+  });
 }
 
 function createModeToggle() {
@@ -146,7 +160,11 @@ export function exportMatrixCSV() {
 
 function escapeCSV(value) {
   if (value === null || value === undefined) return '';
-  const str = String(value);
+  let str = String(value);
+  // Proteção contra injeção de fórmula em Excel/LibreOffice
+  if (/^[=+\-@]/.test(str)) {
+    str = `'${str}`;
+  }
   if (str.includes(',') || str.includes('"') || str.includes('\n')) {
     return `"${str.replace(/"/g, '""')}"`;
   }
@@ -166,7 +184,15 @@ export function exportDossierJSON() {
   const brManifest = workId ? findBrazilianManifestation(workId) : null;
   const origManifest = workId ? findOriginalManifestation(workId) : null;
   const ops = workId ? findOperationsByWork(workId) : [];
-  const evidences = (item.evidencias_ids || []).map(id => _proveniencia.evidencias.find(e => e.id === id)).filter(e => e);
+
+  // União de evidências: do item + das operações tradutórias
+  const evidenceIds = new Set([
+    ...(item.evidencias_ids || []),
+    ...ops.flatMap(op => op.evidence_ids || [])
+  ]);
+  const evidences = [...evidenceIds]
+    .map(id => _proveniencia.evidencias.find(e => e.id === id))
+    .filter(Boolean);
 
   const exportData = {
     versao_pacote: '0.8.0',
@@ -232,7 +258,7 @@ function findOperationsByWork(workId) {
 // ---------- Copiar citação acadêmica ----------
 
 export function copyCitation() {
-  navigator.clipboard.writeText(CITATION).then(() => {
+  navigator.clipboard.writeText(buildCitation()).then(() => {
     const btn = document.getElementById('copy-citation-btn');
     if (btn) {
       const original = btn.textContent;
@@ -358,7 +384,8 @@ function addTechnicalInfoToDossier() {
 
   const workId = getWorkIdForCorpus(item.id);
   const techDiv = document.createElement('div');
-  techDiv.className = 'dossier-section dossier-technical';
+  techDiv.className = 'dossier-section dossier-technical technical-only';
+  techDiv.style.display = _currentMode === 'pesquisar' ? '' : 'none';
   techDiv.innerHTML = `
     <h4>Metadados técnicos</h4>
     <div class="dossier-field">

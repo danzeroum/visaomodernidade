@@ -143,7 +143,6 @@ def browser_context(http_server):
 @pytest.fixture
 def page(browser_context):
     """Cada teste recebe a página compartilhada, com limpeza automática."""
-    # Antes de cada teste, fecha qualquer dossiê aberto e rola para o topo
     p = browser_context.page
     try:
         # Fecha dossiê se estiver aberto
@@ -153,6 +152,17 @@ def page(browser_context):
                 document.getElementById('dossier-overlay').classList.remove('dossier-overlay--open');
                 document.getElementById('dossier-panel').classList.remove('dossier-panel--open');
             """)
+        # Fecha modais de evidência/nó se estiverem abertos
+        p.evaluate("""
+            document.querySelectorAll('#evidence-modal, #node-details-modal').forEach(m => m.remove());
+        """)
+        # Reseta modo para 'explorar' (limpa localStorage)
+        p.evaluate("localStorage.setItem('visaomodernidade-mode', 'explorar')")
+        # Reseta classes do body
+        p.evaluate("""
+            document.body.classList.remove('mode-pesquisar');
+            document.body.classList.add('mode-explorar');
+        """)
         # Rola para o topo
         p.evaluate("window.scrollTo(0, 0)")
     except Exception:
