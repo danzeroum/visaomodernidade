@@ -1320,3 +1320,105 @@ code, pre { font-family: var(--font-mono); font-size: 0.9em; }
   .contextual-legend { font-size: 0.7rem; }
   .layer-node { padding: var(--space-sm); }
 }
+
+/* =========================================================================
+   Sprint 4 — Modo Pesquisa + Exportação
+   ========================================================================= */
+
+/* ---------- Mode toggle ---------- */
+.mode-toggle {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--paper-dark);
+  border-radius: var(--radius);
+  padding: 2px;
+  margin-left: auto;
+}
+.mode-btn {
+  padding: 4px 12px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--sepia);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.mode-btn:hover { color: var(--sepia-dark); }
+.mode-btn--active {
+  background: var(--green-dark);
+  color: var(--paper);
+}
+
+/* ---------- Technical-only elements (hidden in explorar mode) ---------- */
+.technical-only { display: none; }
+body.mode-pesquisar .technical-only { display: block; }
+
+/* ---------- Dense matrix in research mode ---------- */
+.matrix-table--dense { font-size: 0.82rem; }
+.matrix-table--dense td { padding: 4px 8px; }
+
+/* ---------- Export bar ---------- */
+.export-bar {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+/* ---------- Technical panel ---------- */
+.technical-panel {
+  margin-top: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--paper-light);
+  border: 1px solid var(--sepia-light);
+  border-radius: var(--radius-lg);
+}
+.technical-query-result {
+  margin-top: var(--space-md);
+}
+.technical-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.technical-table th {
+  text-align: left;
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--sepia);
+  font-weight: 600;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 180px;
+}
+.technical-table td {
+  padding: var(--space-xs) var(--space-sm);
+  border-top: 1px solid var(--sepia-light);
+  vertical-align: top;
+}
+.technical-table code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: var(--paper-dark);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ---------- Dossiê technical section ---------- */
+.dossier-technical {
+  background: var(--paper-dark);
+  border-radius: var(--radius);
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+@media (max-width: 600px) {
+  .mode-toggle { margin-left: 0; }
+  .export-bar { flex-direction: column; }
+}
